@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Workflow-Driven to Intent-Driven Design | TaazaaX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #F8F6F1;
+            --bg-secondary: #EFEDE8;
+            --text-primary: #2D3436;
+            --text-secondary: #636E72;
+            --accent-teal: #00B894;
+            --accent-dark: #1A1A2E;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --font-display: 'Instrument Serif', Georgia, serif;
+            --font-body: 'DM Sans', -apple-system, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Logo */
+        .logo {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .logo-x {
+            color: var(--accent-teal);
+            font-size: 0.75em;
+            vertical-align: super;
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 100px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s var(--transition-smooth);
+            color: var(--text-primary);
+        }
+
+        .nav-btn:hover {
+            background: var(--bg-secondary);
+            transform: scale(1.1);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-teal), #00CEC9);
+            width: 0%;
+            transition: width 0.5s var(--transition-smooth);
+            z-index: 1001;
+        }
+
+        /* Slides Container */
+        .presentation {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 8rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s var(--transition-smooth);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+            position: relative;
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        /* Typography */
+        .slide-label {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--accent-teal);
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.6s var(--transition-smooth) 0.2s;
+        }
+
+        .slide.active .slide-label {
+            opacity: 1;
+            transform: translateX(0);
+			color: var(--accent-teal);
+        }
+
+        .slide-title {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            line-height: 1.1;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s var(--transition-smooth) 0.3s;
+        }
+
+        .slide.active .slide-title {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-content {
+            font-family: var(--font-body);
+            font-size: clamp(1.25rem, 2.5vw, 2rem);
+            line-height: 1.5;
+            color: var(--text-secondary);
+            max-width: 900px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s var(--transition-smooth) 0.4s;
+        }
+
+        .slide.active .slide-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .slide-list li {
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.5s var(--transition-smooth);
+        }
+
+        .slide.active .slide-list li {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.active .slide-list li:nth-child(1) { transition-delay: 0.3s; }
+        .slide.active .slide-list li:nth-child(2) { transition-delay: 0.4s; }
+        .slide.active .slide-list li:nth-child(3) { transition-delay: 0.5s; }
+        .slide.active .slide-list li:nth-child(4) { transition-delay: 0.6s; }
+        .slide.active .slide-list li:nth-child(5) { transition-delay: 0.7s; }
+        .slide.active .slide-list li:nth-child(6) { transition-delay: 0.8s; }
+
+        /* Title Slide Special */
+        .slide--title {
+            text-align: left;
+        }
+
+        .slide--title .slide-label {
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 0;
+			color: var(--accent-teal);
+        }
+
+        .slide--title .slide-title {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        /* Comparison Slide */
+        .comparison-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .comparison-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: clamp(1.25rem, 2.5vw, 2rem);
+        }
+
+        .comparison-item .arrow {
+            color: var(--accent-teal);
+            font-weight: 700;
+        }
+
+        /* Quote Slide */
+        .slide--quote {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quote-text {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            color: var(--text-primary);
+            max-width: 800px;
+            line-height: 1.4;
+        }
+
+        /* End Slide */
+        .slide--end {
+            text-align: center;
+            align-items: center;
+        }
+
+        .slide--end .slide-content {
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        /* Highlight */
+        .highlight {
+            color: var(--accent-teal);
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 6rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .kbd {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            margin: 0 0.15rem;
+        }
+
+        /* Mouse Holes */
+        .mouse-hole {
+            position: fixed;
+            bottom: 0;
+            width: 50px;
+            height: 25px;
+            z-index: 999;
+        }
+
+        .mouse-hole--left {
+			opacity: 0;
+            left: 30px;
+        }
+
+        .mouse-hole--right {
+            right: 30px;
+			
+        }
+
+        .mouse-hole svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Mouse Character */
+        .mouse-container {
+            position: fixed;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 998;
+            pointer-events: none;
+        }
+
+        .mouse-character {
+            width: 40px;
+            height: 30px;
+            position: relative;
+            transition: transform 0.1s linear;
+        }
+
+        .mouse-character svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Mouse animations */
+        @keyframes tailWag {
+            0%, 100% { transform: rotate(-15deg); }
+            50% { transform: rotate(15deg); }
+        }
+
+        @keyframes earTwitch {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        @keyframes whiskerTwitch {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        .mouse-tail {
+            transform-origin: 100% 50%;
+            animation: tailWag 0.5s ease-in-out infinite;
+        }
+
+        .mouse-ear-left,
+        .mouse-ear-right {
+            animation: earTwitch 0.8s ease-in-out infinite;
+        }
+
+        .mouse-ear-right {
+            animation-delay: 0.1s;
+        }
+
+        .mouse-whiskers {
+            animation: whiskerTwitch 0.5s ease-in-out infinite;
+        }
+
+        /* Startled state */
+        .mouse-character.startled .mouse-ear-left,
+        .mouse-character.startled .mouse-ear-right {
+            animation: none;
+            transform: scale(1.3) rotate(10deg);
+        }
+
+        .mouse-character.startled .mouse-tail {
+            animation: none;
+            transform: rotate(-30deg);
+        }
+
+        /* Hidden state */
+        .mouse-container.hidden {
+            opacity: 0;
+            transform: translateX(-50%) scale(0.5);
+            transition: all 0.3s ease-in;
+        }
+
+        /* Scurrying animation */
+        @keyframes scurry {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.9); }
+        }
+
+        .mouse-character.scurrying {
+            animation: scurry 0.1s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 3rem 2rem;
+            }
+
+            .logo {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .nav-controls {
+                bottom: 1rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .keyboard-hint {
+                display: none;
+            }
+
+            .mouse-hole {
+                width: 1px;
+                height: 1px;
+				opacity: 0;
+            }
+
+            .mouse-hole--left {
+                left: 15px;
+				opacity: 0;
+            }
+
+            .mouse-hole--right {
+                right: 15px;
+				opacity: 0;
+            }
+        }
+
+        /* Touch device hint */
+        @media (hover: none) {
+            .keyboard-hint {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Logo -->
+    <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#00B894"/>
+            <path d="M2 17L12 22L22 17" stroke="#2D3436" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="#2D3436" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>taazaa<span class="logo-x">X</span></span>
+    </div>
+
+    <!-- Mouse Holes -->
+    <div class="mouse-hole mouse-hole--left">
+        <svg viewBox="0 0 50 25">
+            <ellipse cx="25" cy="25" rx="25" ry="22" fill="#1a1a1a"/>
+            <ellipse cx="25" cy="26" rx="20" ry="18" fill="#0d0d0d"/>
+        </svg>
+    </div>
+    <div class="mouse-hole mouse-hole--right">
+        <svg viewBox="0 0 50 25">
+            <ellipse cx="25" cy="25" rx="25" ry="22" fill="#1a1a1a"/>
+            <ellipse cx="25" cy="26" rx="20" ry="18" fill="#0d0d0d"/>
+        </svg>
+    </div>
+
+    <!-- Mouse Character -->
+    <div class="mouse-container" id="mouseContainer">
+        <div class="mouse-character" id="mouseCharacter">
+            <svg viewBox="0 0 60 45" fill="none">
+                <!-- Body -->
+                <ellipse cx="30" cy="30" rx="18" ry="12" fill="#1a1a1a"/>
+                
+                <!-- Head -->
+                <ellipse cx="45" cy="28" rx="12" ry="10" fill="#1a1a1a"/>
+                
+                <!-- Ears -->
+                <ellipse class="mouse-ear-left" cx="40" cy="18" rx="6" ry="7" fill="#1a1a1a"/>
+                <ellipse class="mouse-ear-right" cx="50" cy="18" rx="6" ry="7" fill="#1a1a1a"/>
+                
+                <!-- Inner ears -->
+                <ellipse cx="40" cy="18" rx="3" ry="4" fill="#333"/>
+                <ellipse cx="50" cy="18" rx="3" ry="4" fill="#333"/>
+                
+                <!-- Nose -->
+                <ellipse cx="56" cy="28" rx="2" ry="1.5" fill="#333"/>
+                
+                <!-- Eye -->
+                <circle cx="50" cy="25" r="2" fill="#333"/>
+                <circle cx="51" cy="24" r="0.8" fill="#666"/>
+                
+                <!-- Whiskers -->
+                <g class="mouse-whiskers">
+                    <line x1="55" y1="26" x2="60" y2="24" stroke="#1a1a1a" stroke-width="0.8"/>
+                    <line x1="55" y1="28" x2="60" y2="28" stroke="#1a1a1a" stroke-width="0.8"/>
+                    <line x1="55" y1="30" x2="60" y2="32" stroke="#1a1a1a" stroke-width="0.8"/>
+                </g>
+                
+                <!-- Tail -->
+                <path class="mouse-tail" d="M12 30 Q 0 25, 2 35 Q 5 42, 12 38" stroke="#1a1a1a" stroke-width="3" fill="none" stroke-linecap="round"/>
+                
+                <!-- Legs -->
+                <ellipse cx="22" cy="40" rx="3" ry="2" fill="#1a1a1a"/>
+                <ellipse cx="32" cy="40" rx="3" ry="2" fill="#1a1a1a"/>
+                <ellipse cx="40" cy="38" rx="3" ry="2" fill="#1a1a1a"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Presentation -->
+    <div class="presentation" id="presentation">
+        <!-- Slide 1: Title -->
+        <section class="slide slide--title active" data-slide="1">
+            <span class="slide-label">from</span>
+            <h1 class="slide-title">WORKFLOW-DRIVEN</h1>
+            <span class="slide-label">to</span>
+            <h1 class="slide-title">INTENT-DRIVEN<br>DESIGN</h1>
+        </section>
+
+        <!-- Slide 2: Why This Matters -->
+        <section class="slide" data-slide="2">
+            <span class="slide-label">why this matters…</span>
+            <h2 class="slide-title">If you miss a technological shift, you don't fall behind…</h2>
+            <p class="slide-content"><strong>You disappear.</strong></p>
+        </section>
+
+        <!-- Slide 3: Tech Revolutions -->
+        <section class="slide" data-slide="3">
+            <span class="slide-label">tech revolutions…</span>
+            <ul class="slide-list">
+                <li>Internet</li>
+                <li>PC</li>
+                <li>Mobile</li>
+                <li>Touch</li>
+                <li>Cloud</li>
+                <li>IoT</li>
+            </ul>
+        </section>
+
+        <!-- Slide 4: Winners vs Laggards -->
+        <section class="slide" data-slide="4">
+            <span class="slide-label">winners vs laggards…</span>
+            <ul class="slide-list">
+                <li><span class="highlight">Google</span> vs Yahoo</li>
+                <li><span class="highlight">Apple</span> vs Blackberry</li>
+                <li><span class="highlight">Netflix</span> vs Blockbuster</li>
+            </ul>
+        </section>
+
+        <!-- Slide 5: Mobile-First Shift -->
+        <section class="slide" data-slide="5">
+            <span class="slide-label">the mobile-first shift</span>
+            <ul class="slide-list">
+                <li>UI</li>
+                <li>Behaviour</li>
+                <li>Architecture</li>
+                <li>Business Models</li>
+            </ul>
+        </section>
+
+        <!-- Slide 6: Where We Stand -->
+        <section class="slide" data-slide="6">
+            <span class="slide-label">where we stand today…</span>
+            <h2 class="slide-title">Decision Fatigue.</h2>
+            <p class="slide-content">Too many apps.<br>Too many clicks.</p>
+        </section>
+
+        <!-- Slide 7: Core Shift -->
+        <section class="slide" data-slide="7">
+            <span class="slide-label">the core shift…</span>
+            <div class="comparison-list slide-content">
+                <div class="comparison-item"><span>Workflow</span> <span class="arrow">→</span> <span class="highlight">Intent</span></div>
+                <div class="comparison-item"><span>Steps</span> <span class="arrow">→</span> <span class="highlight">Goals</span></div>
+                <div class="comparison-item"><span>Interfaces</span> <span class="arrow">→</span> <span class="highlight">Conversations</span></div>
+                <div class="comparison-item"><span>Manual</span> <span class="arrow">→</span> <span class="highlight">Predictive</span></div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Workflow-Driven Design -->
+        <section class="slide" data-slide="8">
+            <span class="slide-label">workflow-driven design…</span>
+            <h2 class="slide-title">Rigid.<br>Step-based.<br>User must know how.</h2>
+        </section>
+
+        <!-- Slide 9: Intent-Driven Design -->
+        <section class="slide" data-slide="9">
+            <span class="slide-label">intent-driven design…</span>
+            <h2 class="slide-title">Users say <span class="highlight">WHAT</span>.</h2>
+            <p class="slide-content">System decides <strong>HOW</strong>.</p>
+        </section>
+
+        <!-- Slide 10: Real Life Example -->
+        <section class="slide" data-slide="10">
+            <span class="slide-label">real life example…</span>
+            <ul class="slide-list">
+                <li>"Generate my quarterly sales report."</li>
+                <li>"My API is timing out. Fix it."</li>
+                <li>"Get me all candidates matching this job profile."</li>
+            </ul>
+        </section>
+
+        <!-- Slide 11: Future Interactions -->
+        <section class="slide" data-slide="11">
+            <span class="slide-label">the future interactions…</span>
+            <ul class="slide-list">
+                <li>Voice.</li>
+                <li>Text.</li>
+                <li>Vision.</li>
+                <li>Gesture.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 12: New Interaction Layer -->
+        <section class="slide" data-slide="12">
+            <span class="slide-label">a new interaction layer…</span>
+            <h2 class="slide-title">Apps that act on their own.</h2>
+            <p class="slide-content">Devices that predict needs.</p>
+        </section>
+
+        <!-- Slide 13: Personal AI Agents -->
+        <section class="slide" data-slide="13">
+            <span class="slide-label">personal AI agents…</span>
+            <h2 class="slide-title">Agents will be your new users.</h2>
+        </section>
+
+        <!-- Slide 14: What If We Don't Adapt -->
+        <section class="slide" data-slide="14">
+            <span class="slide-label">what if we don't adapt…</span>
+            <h2 class="slide-title">Apps will become un-integratable.<br>Unusable.<br>Invisible.</h2>
+        </section>
+
+        <!-- Slide 15: Mindset Shift -->
+        <section class="slide" data-slide="15">
+            <span class="slide-label">the "mindset" shift…</span>
+            <h2 class="slide-title">Don't design screens.</h2>
+            <p class="slide-content"><strong>Design outcomes.</strong></p>
+        </section>
+
+        <!-- Slide 16: Architecture -->
+        <section class="slide" data-slide="16">
+            <span class="slide-label">the architecture…</span>
+            <ul class="slide-list">
+                <li>Semantic Layer.</li>
+                <li>Agent-friendly APIs.</li>
+                <li>Generators.</li>
+                <li>Validators.</li>
+                <li>Adaptive UI.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 17: Principles -->
+        <section class="slide" data-slide="17">
+            <span class="slide-label">the principles…</span>
+            <ul class="slide-list">
+                <li><span class="highlight">1.</span> Make the user think less.</li>
+                <li><span class="highlight">2.</span> Make the system do more.</li>
+                <li><span class="highlight">3.</span> Make the experience feel invisible.</li>
+            </ul>
+        </section>
+
+        <!-- Slide 18: The Future -->
+        <section class="slide" data-slide="18">
+            <span class="slide-label">the future…</span>
+            <ul class="slide-list">
+                <li><span class="highlight">1.</span> AR Glasses</li>
+                <li><span class="highlight">2.</span> Ambient AI</li>
+                <li><span class="highlight">3.</span> IoT Mesh</li>
+            </ul>
+            <p class="slide-content" style="margin-top: 2rem;"><strong>Workflow design simply cannot survive.</strong></p>
+        </section>
+
+        <!-- Slide 19: Resistance -->
+        <section class="slide" data-slide="19">
+            <span class="slide-label">resistance is natural…</span>
+            <h2 class="slide-title">We can cling to workflows…</h2>
+            <p class="slide-content">Or we can <span class="highlight">embrace the next evolution</span>.</p>
+        </section>
+
+        <!-- Slide 20: End Notes -->
+        <section class="slide slide--quote" data-slide="20">
+            <span class="slide-label">the end notes…</span>
+            <p class="quote-text">The future belongs to <span class="highlight">intent-driven systems</span>.</p>
+        </section>
+
+        <!-- Slide 21: Questions -->
+        <section class="slide slide--end" data-slide="21">
+            <span class="slide-label">let's build the future…</span>
+            <h2 class="slide-title">any questions…</h2>
+            <p class="slide-content">AI will answer better…harsh but <span class="highlight">TRUE</span>.</p>
+        </section>
+    </div>
+
+    <!-- Navigation -->
+    <nav hidden>
+        <button class="nav-btn" id="prevBtn" aria-label="Previous slide" hidden>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+        <span class="slide-counter"><span id="currentSlide" hidden>1</span> / <span id="totalSlides" hidden>21</span></span>
+        <button class="nav-btn" id="nextBtn" aria-label="Next slide" hidden>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+    </nav>
+
+    <div class="keyboard-hint" hidden>
+        Press <span class="kbd">←</span> <span class="kbd">→</span> or <span class="kbd">Space</span> to navigate
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const MOUSE_ENABLED = true; // Set to false to hide the mouse
+
+        // ============================================
+        // PRESENTATION LOGIC
+        // ============================================
+        class Presentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.totalSlides = this.slides.length;
+                this.currentSlide = 1;
+                
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.currentSlideEl = document.getElementById('currentSlide');
+                this.totalSlidesEl = document.getElementById('totalSlides');
+                this.progressBar = document.getElementById('progressBar');
+                
+                this.init();
+            }
+
+            init() {
+                this.totalSlidesEl.textContent = this.totalSlides;
+                this.updateUI();
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                this.prevBtn.addEventListener('click', () => this.prev());
+                this.nextBtn.addEventListener('click', () => this.next());
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
+                        this.next();
+                    } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.prev();
+                    }
+                });
+
+                // Touch swipe support
+                let touchStartX = 0;
+                let touchEndX = 0;
+
+                document.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+
+                document.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    const diff = touchStartX - touchEndX;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) this.next();
+                        else this.prev();
+                    }
+                }, { passive: true });
+            }
+
+            goTo(slideNum) {
+                if (slideNum < 1 || slideNum > this.totalSlides) return;
+                if (slideNum === this.currentSlide) return;
+
+                // Trigger mouse startle
+                if (MOUSE_ENABLED && window.mouseBuddy) {
+                    window.mouseBuddy.startle();
+                }
+
+                this.slides.forEach(slide => slide.classList.remove('active'));
+                this.slides[slideNum - 1].classList.add('active');
+                this.currentSlide = slideNum;
+                this.updateUI();
+            }
+
+            next() {
+                if (this.currentSlide < this.totalSlides) {
+                    this.goTo(this.currentSlide + 1);
+                }
+            }
+
+            prev() {
+                if (this.currentSlide > 1) {
+                    this.goTo(this.currentSlide - 1);
+                }
+            }
+
+            updateUI() {
+                this.currentSlideEl.textContent = this.currentSlide;
+                this.prevBtn.disabled = this.currentSlide === 1;
+                this.nextBtn.disabled = this.currentSlide === this.totalSlides;
+                
+                const progress = (this.currentSlide / this.totalSlides) * 100;
+                this.progressBar.style.width = `${progress}%`;
+            }
+        }
+
+        // ============================================
+        // MOUSE CHARACTER LOGIC
+        // ============================================
+        class MouseBuddy {
+            constructor() {
+                this.container = document.getElementById('mouseContainer');
+                this.character = document.getElementById('mouseCharacter');
+                this.holes = {
+                    left: document.querySelector('.mouse-hole--left'),
+                    right: document.querySelector('.mouse-hole--right')
+                };
+
+                // State
+                this.state = 'walking'; // walking, startled, hiding, peeking, returning
+                this.position = window.innerWidth / 2;
+                this.direction = 1; // 1 = right, -1 = left
+                this.speed = 1.5;
+                this.walkRange = { min: 100, max: window.innerWidth - 100 };
+                
+                // Animation
+                this.animationId = null;
+                this.lastTime = 0;
+
+                this.init();
+            }
+
+            init() {
+                if (!MOUSE_ENABLED) {
+                    this.container.style.display = 'none';
+                    document.querySelectorAll('.mouse-hole').forEach(h => h.style.display = 'none');
+                    return;
+                }
+
+                window.addEventListener('resize', () => {
+                    this.walkRange.max = window.innerWidth - 100;
+                });
+
+                this.startWalking();
+            }
+
+            startWalking() {
+                this.state = 'walking';
+                this.container.classList.remove('hidden');
+                this.character.classList.remove('startled', 'scurrying');
+                this.animate();
+            }
+
+            animate(currentTime = 0) {
+                if (this.state !== 'walking') {
+                    this.animationId = null;
+                    return;
+                }
+
+                const deltaTime = currentTime - this.lastTime;
+                this.lastTime = currentTime;
+
+                // Update position
+                this.position += this.direction * this.speed;
+
+                // Check boundaries and reverse
+                if (this.position >= this.walkRange.max) {
+                    this.direction = -1;
+                    this.character.style.transform = 'scaleX(-1)';
+                } else if (this.position <= this.walkRange.min) {
+                    this.direction = 1;
+                    this.character.style.transform = 'scaleX(1)';
+                }
+
+                // Apply position
+                this.container.style.left = `${this.position}px`;
+                this.container.style.transform = 'translateX(-50%)';
+
+                this.animationId = requestAnimationFrame((t) => this.animate(t));
+            }
+
+            startle() {
+                <!-- if (!MOUSE_ENABLED || this.state === 'hiding') return; -->
+
+                <!-- // Cancel current animation -->
+                <!-- if (this.animationId) { -->
+                    <!-- cancelAnimationFrame(this.animationId); -->
+                    <!-- this.animationId = null; -->
+                <!-- } -->
+
+                <!-- this.state = 'startled'; -->
+                <!-- this.character.classList.add('startled'); -->
+
+                <!-- // Brief pause, look up -->
+                <!-- setTimeout(() => { -->
+                    <!-- this.scurryToHole(); -->
+                <!-- }, 300); -->
+            }
+
+            scurryToHole() {
+                this.state = 'scurrying';
+                this.character.classList.add('scurrying');
+                this.character.classList.remove('startled');
+
+                // Choose random hole
+                const goLeft = Math.random() > 0.5;
+                const targetX = goLeft ? 55 : window.innerWidth - 55;
+                
+                // Face the right direction
+                this.character.style.transform = goLeft ? 'scaleX(1)' : 'scaleX(-1)';
+
+                // Animate to hole
+                const startX = this.position;
+                const distance = targetX - startX;
+                const duration = Math.abs(distance) * 2; // Speed based on distance
+                const startTime = performance.now();
+
+                const scurryAnimation = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    // Easing - start fast, slow at end
+                    const eased = 1 - Math.pow(1 - progress, 2);
+                    
+                    this.position = startX + (distance * eased);
+                    this.container.style.left = `${this.position}px`;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(scurryAnimation);
+                    } else {
+                        this.hide();
+                    }
+                };
+
+                requestAnimationFrame(scurryAnimation);
+            }
+
+            hide() {
+                this.state = 'hiding';
+                this.container.classList.add('hidden');
+                this.character.classList.remove('scurrying');
+
+                // Wait random time before peeking
+                const hideTime = 2000 + Math.random() * 3000;
+                setTimeout(() => {
+                    this.peek();
+                }, hideTime);
+            }
+
+            peek() {
+                this.state = 'peeking';
+                
+                // Brief peek animation
+                this.container.classList.remove('hidden');
+                this.container.style.opacity = '0.7';
+                
+                setTimeout(() => {
+                    this.returnToCenter();
+                }, 800);
+            }
+
+            returnToCenter() {
+                this.state = 'returning';
+                this.container.style.opacity = '1';
+                
+                const targetX = window.innerWidth / 2;
+                const startX = this.position;
+                const distance = targetX - startX;
+                const duration = Math.abs(distance) * 3;
+                const startTime = performance.now();
+
+                // Face the right direction
+                this.character.style.transform = distance > 0 ? 'scaleX(1)' : 'scaleX(-1)';
+
+                const returnAnimation = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    const eased = progress * (2 - progress); // ease out
+                    
+                    this.position = startX + (distance * eased);
+                    this.container.style.left = `${this.position}px`;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(returnAnimation);
+                    } else {
+                        this.direction = 1;
+                        this.character.style.transform = 'scaleX(1)';
+                        this.startWalking();
+                    }
+                };
+
+                requestAnimationFrame(returnAnimation);
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const presentation = new Presentation();
+            window.mouseBuddy = new MouseBuddy();
+        });
+    </script>
+</body>
+</html>
