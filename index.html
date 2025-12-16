@@ -9,7 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #F8F6F1;
+            /* The starting color is defined here, but the animation will override it */
+            --bg-primary: #F8F6F1; 
             --bg-secondary: #EFEDE8;
             --text-primary: #2D3436;
             --text-secondary: #636E72;
@@ -30,12 +31,36 @@
             scroll-behavior: smooth;
         }
 
+        /* BACKGROUND ANIMATION DEFINITION 
+           Cycles through subtle, light colors to maintain readability
+        */
+        @keyframes subtleColorShift {
+            0% {
+                background-color: #F8F6F1; /* Original Warm Off-White */
+            }
+            25% {
+                background-color: #F0F7F4; /* Very Soft Mint (matches Teal accent) */
+            }
+            50% {
+                background-color: #F4F1F8; /* Very Soft Lavender */
+            }
+            75% {
+                background-color: #F9F3EE; /* Very Soft Peach */
+            }
+            100% {
+                background-color: #F8F6F1; /* Loop back to start */
+            }
+        }
+
         body {
             font-family: var(--font-body);
             background-color: var(--bg-primary);
             color: var(--text-primary);
             overflow-x: hidden;
             min-height: 100vh;
+            
+            /* Apply the animation here: 60 seconds for a full slow cycle */
+            animation: subtleColorShift 60s infinite ease-in-out;
         }
 
         /* Logo */
@@ -74,7 +99,8 @@
             align-items: center;
             gap: 1rem;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.9);
+            /* Increased transparency slightly to blend better with changing backgrounds */
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(10px);
             padding: 0.75rem 1.5rem;
             border-radius: 100px;
@@ -172,7 +198,7 @@
         .slide.active .slide-label {
             opacity: 1;
             transform: translateX(0);
-			color: var(--accent-teal);
+            color: var(--accent-teal);
         }
 
         .slide-title {
@@ -244,7 +270,7 @@
         .slide--title .slide-label {
             font-size: clamp(3rem, 8vw, 6rem);
             margin-bottom: 0;
-			color: var(--accent-teal);
+            color: var(--accent-teal);
         }
 
         .slide--title .slide-title {
@@ -337,13 +363,13 @@
         }
 
         .mouse-hole--left {
-			opacity: 0;
+            opacity: 0;
             left: 30px;
         }
 
         .mouse-hole--right {
             right: 30px;
-			
+            
         }
 
         .mouse-hole svg {
@@ -459,17 +485,17 @@
             .mouse-hole {
                 width: 1px;
                 height: 1px;
-				opacity: 0;
+                opacity: 0;
             }
 
             .mouse-hole--left {
                 left: 15px;
-				opacity: 0;
+                opacity: 0;
             }
 
             .mouse-hole--right {
                 right: 15px;
-				opacity: 0;
+                opacity: 0;
             }
         }
 
@@ -482,15 +508,13 @@
     </style>
 </head>
 <body>
-    <!-- Progress Bar -->
+
     <div class="progress-bar" id="progressBar"></div>
 
-    <!-- Logo -->
     <div class="logo">
         <span>taazaa<span class="logo-x">X</span></span>
     </div>
 
-    <!-- Mouse Holes -->
     <div class="mouse-hole mouse-hole--left">
         <svg viewBox="0 0 50 25">
             <ellipse cx="25" cy="25" rx="25" ry="22" fill="#1a1a1a"/>
@@ -504,42 +528,32 @@
         </svg>
     </div>
 
-    <!-- Mouse Character -->
     <div class="mouse-container" id="mouseContainer">
         <div class="mouse-character" id="mouseCharacter">
             <svg viewBox="0 0 60 45" fill="none">
-                <!-- Body -->
                 <ellipse cx="30" cy="30" rx="18" ry="12" fill="#1a1a1a"/>
                 
-                <!-- Head -->
                 <ellipse cx="45" cy="28" rx="12" ry="10" fill="#1a1a1a"/>
                 
-                <!-- Ears -->
                 <ellipse class="mouse-ear-left" cx="40" cy="18" rx="6" ry="7" fill="#1a1a1a"/>
                 <ellipse class="mouse-ear-right" cx="50" cy="18" rx="6" ry="7" fill="#1a1a1a"/>
                 
-                <!-- Inner ears -->
                 <ellipse cx="40" cy="18" rx="3" ry="4" fill="#333"/>
                 <ellipse cx="50" cy="18" rx="3" ry="4" fill="#333"/>
                 
-                <!-- Nose -->
                 <ellipse cx="56" cy="28" rx="2" ry="1.5" fill="#333"/>
                 
-                <!-- Eye -->
                 <circle cx="50" cy="25" r="2" fill="#333"/>
                 <circle cx="51" cy="24" r="0.8" fill="#666"/>
                 
-                <!-- Whiskers -->
                 <g class="mouse-whiskers">
                     <line x1="55" y1="26" x2="60" y2="24" stroke="#1a1a1a" stroke-width="0.8"/>
                     <line x1="55" y1="28" x2="60" y2="28" stroke="#1a1a1a" stroke-width="0.8"/>
                     <line x1="55" y1="30" x2="60" y2="32" stroke="#1a1a1a" stroke-width="0.8"/>
                 </g>
                 
-                <!-- Tail -->
                 <path class="mouse-tail" d="M12 30 Q 0 25, 2 35 Q 5 42, 12 38" stroke="#1a1a1a" stroke-width="3" fill="none" stroke-linecap="round"/>
                 
-                <!-- Legs -->
                 <ellipse cx="22" cy="40" rx="3" ry="2" fill="#1a1a1a"/>
                 <ellipse cx="32" cy="40" rx="3" ry="2" fill="#1a1a1a"/>
                 <ellipse cx="40" cy="38" rx="3" ry="2" fill="#1a1a1a"/>
@@ -547,9 +561,7 @@
         </div>
     </div>
 
-    <!-- Presentation -->
     <div class="presentation" id="presentation">
-        <!-- Slide 1: Title -->
         <section class="slide slide--title active" data-slide="1">
             <span class="slide-label">from</span>
             <h1 class="slide-title">WORKFLOW-DRIVEN</h1>
@@ -557,14 +569,12 @@
             <h1 class="slide-title">INTENT-DRIVEN<br>DESIGN</h1>
         </section>
 
-        <!-- Slide 2: Why This Matters -->
         <section class="slide" data-slide="2">
             <span class="slide-label">why this matters…</span>
             <h2 class="slide-title">If you miss a technological shift, you don't fall behind…</h2>
             <p class="slide-content"><strong>You disappear.</strong></p>
         </section>
 
-        <!-- Slide 3: Tech Revolutions -->
         <section class="slide" data-slide="3">
             <span class="slide-label">tech revolutions…</span>
             <ul class="slide-list">
@@ -577,7 +587,6 @@
             </ul>
         </section>
 
-        <!-- Slide 4: Winners vs Laggards -->
         <section class="slide" data-slide="4">
             <span class="slide-label">winners vs laggards…</span>
             <ul class="slide-list">
@@ -587,7 +596,6 @@
             </ul>
         </section>
 
-        <!-- Slide 5: Mobile-First Shift -->
         <section class="slide" data-slide="5">
             <span class="slide-label">the mobile-first shift</span>
             <ul class="slide-list">
@@ -598,14 +606,12 @@
             </ul>
         </section>
 
-        <!-- Slide 6: Where We Stand -->
         <section class="slide" data-slide="6">
             <span class="slide-label">where we stand today…</span>
             <h2 class="slide-title">Decision Fatigue.</h2>
             <p class="slide-content">Too many apps.<br>Too many clicks.</p>
         </section>
 
-        <!-- Slide 7: Core Shift -->
         <section class="slide" data-slide="7">
             <span class="slide-label">the core shift…</span>
             <div class="comparison-list slide-content">
@@ -616,20 +622,17 @@
             </div>
         </section>
 
-        <!-- Slide 8: Workflow-Driven Design -->
         <section class="slide" data-slide="8">
             <span class="slide-label">workflow-driven design…</span>
             <h2 class="slide-title">Rigid.<br>Step-based.<br>User must know how.</h2>
         </section>
 
-        <!-- Slide 9: Intent-Driven Design -->
         <section class="slide" data-slide="9">
             <span class="slide-label">intent-driven design…</span>
             <h2 class="slide-title">Users say <span class="highlight">WHAT</span>.</h2>
             <p class="slide-content">System decides <strong>HOW</strong>.</p>
         </section>
 
-        <!-- Slide 10: Real Life Example -->
         <section class="slide" data-slide="10">
             <span class="slide-label">real life example…</span>
             <ul class="slide-list">
@@ -639,7 +642,6 @@
             </ul>
         </section>
 
-        <!-- Slide 11: Future Interactions -->
         <section class="slide" data-slide="11">
             <span class="slide-label">the future interactions…</span>
             <ul class="slide-list">
@@ -650,33 +652,28 @@
             </ul>
         </section>
 
-        <!-- Slide 12: New Interaction Layer -->
         <section class="slide" data-slide="12">
             <span class="slide-label">a new interaction layer…</span>
             <h2 class="slide-title">Apps that act on their own.</h2>
             <p class="slide-content">Devices that predict needs.</p>
         </section>
 
-        <!-- Slide 13: Personal AI Agents -->
         <section class="slide" data-slide="13">
             <span class="slide-label">personal AI agents…</span>
             <h2 class="slide-title">Agents will be your new users.</h2>
         </section>
 
-        <!-- Slide 14: What If We Don't Adapt -->
         <section class="slide" data-slide="14">
             <span class="slide-label">what if we don't adapt…</span>
             <h2 class="slide-title">Apps will become un-integratable.<br>Unusable.<br>Invisible.</h2>
         </section>
 
-        <!-- Slide 15: Mindset Shift -->
         <section class="slide" data-slide="15">
             <span class="slide-label">the "mindset" shift…</span>
             <h2 class="slide-title">Don't design screens.</h2>
             <p class="slide-content"><strong>Design outcomes.</strong></p>
         </section>
 
-        <!-- Slide 16: Architecture -->
         <section class="slide" data-slide="16">
             <span class="slide-label">the architecture…</span>
             <ul class="slide-list">
@@ -688,7 +685,6 @@
             </ul>
         </section>
 
-        <!-- Slide 17: Principles -->
         <section class="slide" data-slide="17">
             <span class="slide-label">the principles…</span>
             <ul class="slide-list">
@@ -698,7 +694,6 @@
             </ul>
         </section>
 
-        <!-- Slide 18: The Future -->
         <section class="slide" data-slide="18">
             <span class="slide-label">the future…</span>
             <ul class="slide-list">
@@ -709,20 +704,17 @@
             <p class="slide-content" style="margin-top: 2rem;"><strong>Workflow design simply cannot survive.</strong></p>
         </section>
 
-        <!-- Slide 19: Resistance -->
         <section class="slide" data-slide="19">
             <span class="slide-label">resistance is natural…</span>
             <h2 class="slide-title">We can cling to workflows…</h2>
             <p class="slide-content">Or we can <span class="highlight">embrace the next evolution</span>.</p>
         </section>
 
-        <!-- Slide 20: End Notes -->
         <section class="slide slide--quote" data-slide="20">
             <span class="slide-label">the end notes…</span>
             <p class="quote-text">The future belongs to <span class="highlight">intent-driven systems</span>.</p>
         </section>
 
-        <!-- Slide 21: Questions -->
         <section class="slide slide--end" data-slide="21">
             <span class="slide-label">let's build the future…</span>
             <h2 class="slide-title">any questions…</h2>
@@ -730,7 +722,6 @@
         </section>
     </div>
 
-    <!-- Navigation -->
     <nav hidden>
         <button class="nav-btn" id="prevBtn" aria-label="Previous slide" hidden>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -924,21 +915,21 @@
             }
 
             startle() {
-                <!-- if (!MOUSE_ENABLED || this.state === 'hiding') return; -->
+                if (!MOUSE_ENABLED || this.state === 'hiding') return;
 
-                <!-- // Cancel current animation -->
-                <!-- if (this.animationId) { -->
-                    <!-- cancelAnimationFrame(this.animationId); -->
-                    <!-- this.animationId = null; -->
-                <!-- } -->
+                // Cancel current animation
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
+                }
 
-                <!-- this.state = 'startled'; -->
-                <!-- this.character.classList.add('startled'); -->
+                this.state = 'startled';
+                this.character.classList.add('startled');
 
-                <!-- // Brief pause, look up -->
-                <!-- setTimeout(() => { -->
-                    <!-- this.scurryToHole(); -->
-                <!-- }, 300); -->
+                // Brief pause, look up
+                setTimeout(() => {
+                    this.scurryToHole();
+                }, 300);
             }
 
             scurryToHole() {
