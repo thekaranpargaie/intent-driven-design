@@ -79,7 +79,7 @@
         }
 
         .logo-icon {
-            width: 24px;
+            width: auto;
             height: 24px;
         }
 
@@ -505,6 +505,66 @@
                 display: none;
             }
         }
+        /* --- Right Side Illustration Container --- */
+.slide-illustration {
+    position: absolute;
+    right: 5%; /* Distance from right edge */
+    top: 50%;
+    transform: translateY(-50%); /* Perfectly vertically centered */
+    width: 45vw; /* Takes up 45% of view width */
+    max-width: 650px; /* But never wider than this */
+    max-height: 80vh;
+    z-index: 1;
+    
+    /* Flexbox to handle image sizing nicely */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Fade in transition */
+    opacity: 0;
+    transition: opacity 1s ease 0.5s;
+}
+
+.slide.active .slide-illustration {
+    opacity: 1;
+}
+
+/* --- The Image Styling --- */
+.slide-illustration img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    
+    /* Soft Shadow that works with Transparent PNGs */
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
+    
+    /* Optional: Rounded corners if you use rectangular JPGs */
+    border-radius: 12px;
+}
+
+/* --- The Breathing Animation --- */
+/* Applied to the IMG tag so it floats inside the container */
+.illustration-anim img {
+    animation: floatBreathing 6s ease-in-out infinite;
+    will-change: transform; /* Performance optimization */
+}
+
+@keyframes floatBreathing {
+    0%, 100% { 
+        transform: translateY(0) scale(1); 
+    }
+    50% { 
+        transform: translateY(-15px) scale(1.02); /* Floats up and slightly grows */
+    }
+}
+
+/* Mobile: Hide images to save space */
+@media (max-width: 1024px) {
+    .slide-illustration {
+        display: none;
+    }
+}
     </style>
 </head>
 <body>
@@ -512,7 +572,7 @@
     <div class="progress-bar" id="progressBar"></div>
 
     <div class="logo">
-        <span>taazaa<span class="logo-x">X</span></span>
+        <img src ="taazaax.png" alt="Taazaa X Logo" class="logo-icon">
     </div>
 
     <div class="mouse-hole mouse-hole--left">
