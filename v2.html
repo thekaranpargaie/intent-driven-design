@@ -262,6 +262,164 @@
         .slide.active .slide-list li:nth-child(5) { transition-delay: 0.7s; }
         .slide.active .slide-list li:nth-child(6) { transition-delay: 0.8s; }
 
+        /* Timeline Styles */
+        .timeline {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            max-width: 100%;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s var(--transition-smooth);
+            position: relative;
+        }
+
+        .slide.active .timeline-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item:nth-child(1) { transition-delay: 0.3s; }
+        .timeline-item:nth-child(2) { transition-delay: 0.4s; }
+        .timeline-item:nth-child(3) { transition-delay: 0.5s; }
+        .timeline-item:nth-child(4) { transition-delay: 0.6s; }
+        .timeline-item:nth-child(5) { transition-delay: 0.7s; }
+        .timeline-item:nth-child(6) { transition-delay: 0.8s; }
+        .timeline-item:nth-child(7) { transition-delay: 0.9s; }
+
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            background: var(--accent-teal);
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.2);
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .timeline-item:hover .timeline-dot {
+            transform: scale(1.3);
+            box-shadow: 0 0 0 6px rgba(0, 184, 148, 0.3);
+        }
+
+        .timeline-content {
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            color: var(--text-primary);
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .timeline-connector {
+            position: absolute;
+            left: -1.5rem;
+            width: 1.5rem;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-teal));
+            top: 10px;
+        }
+
+        .timeline-item:first-child .timeline-connector {
+            display: none;
+        }
+
+        /* Interactions Grid */
+        .interactions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            max-width: 900px;
+            margin-top: 3rem;
+        }
+
+        .interaction-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 2rem 2.5rem;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.08) 0%, rgba(0, 184, 148, 0.04) 100%);
+            border: 2px solid rgba(0, 184, 148, 0.2);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interaction-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-teal), transparent);
+            opacity: 0;
+            transition: opacity 0.3s var(--transition-smooth);
+        }
+
+        .slide.active .interaction-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .interaction-card:hover {
+            border-color: var(--accent-teal);
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.15) 0%, rgba(0, 184, 148, 0.08) 100%);
+            transform: translateY(-8px);
+        }
+
+        .interaction-card:hover::before {
+            opacity: 1;
+        }
+
+        .interaction-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .interaction-label {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .interaction-description {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        .slide.active .interaction-card:nth-child(1) { transition-delay: 0.3s; }
+        .slide.active .interaction-card:nth-child(2) { transition-delay: 0.4s; }
+        .slide.active .interaction-card:nth-child(3) { transition-delay: 0.5s; }
+        .slide.active .interaction-card:nth-child(4) { transition-delay: 0.6s; }
+
         /* Title Slide Special */
         .slide--title {
             text-align: left;
@@ -505,6 +663,61 @@
                 display: none;
             }
         }
+        
+        /* --- BLOB ANIMATION (Bottom Right) --- */
+        .shape-container {
+            position: fixed;
+            bottom: -80px;
+            right: -80px;
+            width: 600px;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .blob {
+            width: 450px;
+            height: 450px;
+            background: linear-gradient(135deg, #6ee7b7 0%, #34d399 50%, #059669 100%);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: 
+                morphBlob 15s ease-in-out infinite alternate, 
+                swayBlob 8s ease-in-out infinite alternate;
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+            opacity: 0.9;
+        }
+
+        .ring {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border: 2px solid rgba(5, 150, 105, 0.1);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            animation: rotateRing 30s linear infinite reverse;
+            z-index: -1;
+        }
+
+        @keyframes morphBlob {
+            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+            100% { border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%; }
+        }
+
+        @keyframes swayBlob {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(20px, -20px); }
+        }
+
+        @keyframes rotateRing {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* --- Right Side Illustration Container --- */
 .slide-illustration {
     position: absolute;
@@ -559,6 +772,66 @@
     }
 }
 
+/* --- HEXAGON CORNER ANIMATION --- */
+.hex-corner {
+    position: fixed;
+    bottom: -10px;
+    right: -10px;
+    width: 350px;
+    height: 250px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.hex {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+    
+    /* DEFAULT STATE - Subtle teal */
+    stroke: var(--accent-teal);
+    opacity: 0.2;
+    stroke-width: 1px;
+    
+    /* Animation applied to all */
+    animation: hexaglow 6s ease-in-out infinite;
+}
+
+/* --- HEXAGON ANIMATION - Using highlight color (teal) --- */
+@keyframes hexaglow {
+    0%, 100% {
+        stroke: var(--accent-teal);
+        opacity: 0.2;
+        stroke-width: 1px;
+        filter: drop-shadow(0 0 0 transparent);
+    }
+    50% {
+        stroke: var(--accent-teal);
+        opacity: 0.8;
+        stroke-width: 2px;
+        filter: drop-shadow(0 0 8px rgba(0, 184, 148, 0.5));
+    }
+}
+
+/* Grid positioning for hexagons */
+.h1 { bottom: 0; right: 0; animation-delay: 0s; }
+.h2 { bottom: 0; right: 65px; animation-delay: 2s; }
+.h3 { bottom: 0; right: 130px; animation-delay: 4s; }
+.h4 { bottom: 0; right: 195px; animation-delay: 1s; }
+.h5 { bottom: 50px; right: 32px; animation-delay: 3s; }
+.h6 { bottom: 50px; right: 97px; animation-delay: 1s; }
+.h7 { bottom: 50px; right: 162px; animation-delay: 5s; }
+.h8 { bottom: 50px; right: 227px; animation-delay: 2.5s; }
+.h9 { bottom: 100px; right: 0; animation-delay: 1.5s; }
+.h10 { bottom: 100px; right: 65px; animation-delay: 4.5s; }
+.h11 { bottom: 100px; right: 130px; animation-delay: 0.5s; }
+.h12 { bottom: 150px; right: 32px; animation-delay: 3.5s; }
+.h13 { bottom: 150px; right: 97px; animation-delay: 2s; }
+
 /* Mobile: Hide images to save space */
 @media (max-width: 1024px) {
     .slide-illustration {
@@ -587,6 +860,11 @@
             <ellipse cx="25" cy="26" rx="20" ry="18" fill="#0d0d0d"/>
         </svg>
     </div>
+
+    <!-- <div class="shape-container">
+        <div class="ring"></div>
+        <div class="blob"></div>
+    </div> -->
 
     <div class="mouse-container" id="mouseContainer">
         <div class="mouse-character" id="mouseCharacter">
@@ -623,10 +901,14 @@
 
     <div class="presentation" id="presentation">
         <section class="slide slide--title active" data-slide="1">
-            <span class="slide-label">from</span>
-            <h1 class="slide-title">WORKFLOW-DRIVEN</h1>
-            <span class="slide-label">to</span>
-            <h1 class="slide-title">INTENT-DRIVEN<br>DESIGN</h1>
+            <span class="slide-label">the next evolution</span>
+            
+            <h1 class="slide-title">The Future of Apps</h1>
+            
+            <p class="slide-content" style="margin-top: 1.5rem; font-size: 1.2rem; letter-spacing: 1px;">
+                Moving from <span style="opacity: 0.5; text-decoration: line-through;">Workflows</span> 
+                to <span class="highlight">Intent</span>
+            </p>
         </section>
 
         <section class="slide" data-slide="2">
@@ -637,14 +919,42 @@
 
         <section class="slide" data-slide="3">
             <span class="slide-label">tech revolutions…</span>
-            <ul class="slide-list">
-                <li>Internet</li>
-                <li>PC</li>
-                <li>Mobile</li>
-                <li>Touch</li>
-                <li>Cloud</li>
-                <li>IoT</li>
-            </ul>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">PC</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">Internet</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">Mobile</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">Touch</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">Cloud</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">IoT</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">AI</div>
+                </div>
+            </div>
         </section>
 
         <section class="slide" data-slide="4">
@@ -679,7 +989,7 @@
             <div class="comparison-container" style="display: flex; gap: 2rem; margin-top: 2rem; text-align: left;">
                 <div class="comparison-left" style="flex: 1; opacity: 0.5; border-right: 1px solid #fff;">
                     <h4 style="margin-bottom:0.5rem;">The Old Way</h4>
-                    <p style="font-size: 0.7em; line-height: 1.4; margin:0;">
+                    <p class="slide-content">
                         1. Open App<br>
                         2. Select Dates<br>
                         3. Filter Airlines<br>
@@ -690,7 +1000,7 @@
                 </div>
                 <div class="comparison-right" style="flex: 1; padding-left: 1rem;">
                     <h4 class="highlight" style="margin-bottom:0.5rem;">The Intent Way</h4>
-                    <p style="font-size: 1.1em; font-weight: bold; line-height: 1.2;">
+                    <p class="slide-content">
                         "Get me on the first flight to NYC tomorrow morning under $400."
                     </p>
                 </div>
@@ -719,41 +1029,51 @@
 
         <section class="slide" data-slide="11">
             <span class="slide-label">the future interactions…</span>
-            <ul class="slide-list">
-                <li>Voice.</li>
-                <li>Text.</li>
-                <li>Vision.</li>
-                <li>Gesture.</li>
-            </ul>
+            <div class="interactions-grid">
+                <div class="interaction-card">
+                    <div class="interaction-icon">🎤</div>
+                    <div class="interaction-label">Voice</div>
+                    <div class="interaction-description">Natural language commands</div>
+                </div>
+                <div class="interaction-card">
+                    <div class="interaction-icon">💬</div>
+                    <div class="interaction-label">Text</div>
+                    <div class="interaction-description">Conversational AI</div>
+                </div>
+                <div class="interaction-card">
+                    <div class="interaction-icon">👁️</div>
+                    <div class="interaction-label">Vision</div>
+                    <div class="interaction-description">Visual recognition</div>
+                </div>
+                <div class="interaction-card">
+                    <div class="interaction-icon">👆</div>
+                    <div class="interaction-label">Gesture</div>
+                    <div class="interaction-description">Motion-based input</div>
+                </div>
+            </div>
         </section>
 
         <section class="slide" data-slide="12">
-            <span class="slide-label">a new interaction layer…</span>
-            <h2 class="slide-title">Apps that act on their own.</h2>
-            <p class="slide-content">Devices that predict needs.</p>
-        </section>
-
-        <section class="slide" data-slide="13">
             <span class="slide-label">the new user…</span>
             <h2 class="slide-title">You aren't designing for eyes anymore.</h2>
             <p class="slide-content">You are designing for <span class="highlight">APIs</span> that AI agents read.</p>
             <p class="slide-content" style="font-size: 0.6em; opacity: 0.7; margin-top: 1rem;">(If an AI can't read your app, a human won't find it.)</p>
         </section>
 
-        <section class="slide" data-slide="14">
+        <section class="slide" data-slide="13">
             <span class="slide-label">what if we don't adapt…</span>
             <h2 class="slide-title">Apps will become un-integratable.<br>Unusable.<br>Invisible.</h2>
         </section>
 
-        <section class="slide" data-slide="15">
+        <section class="slide" data-slide="14">
             <span class="slide-label">the "mindset" shift…</span>
             <h2 class="slide-title">Don't design screens.</h2>
             <p class="slide-content"><strong>Design outcomes.</strong></p>
         </section>
 
-        <section class="slide" data-slide="16">
+        <section class="slide" data-slide="15">
             <span class="slide-label">the new blueprint…</span>
-            <ul class="slide-list" style="text-align: left; margin-left: 10%;">
+            <ul class="slide-list">
                 <li style="margin-bottom: 1rem;">
                     <strong>Semantic Layer</strong>
                     <br><span style="font-size: 0.6em; opacity: 0.7; font-weight: normal;">(Teaching the machine what "Urgent" means)</span>
@@ -769,7 +1089,7 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="17">
+        <section class="slide" data-slide="16">
             <span class="slide-label">the principles…</span>
             <ul class="slide-list">
                 <li><span class="highlight">1.</span> Make the user think less.</li>
@@ -778,7 +1098,7 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="18">
+        <section class="slide" data-slide="17">
             <span class="slide-label">the vanishing act…</span>
             <h2 class="slide-title">The best interface is <span class="highlight">no interface</span>.</h2>
             <ul class="slide-list" style="margin-top: 2rem;">
@@ -788,22 +1108,25 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="19">
+        <section class="slide" data-slide="18">
             <span class="slide-label">resistance is natural…</span>
             <h2 class="slide-title">We can cling to workflows…</h2>
             <p class="slide-content">Or we can <span class="highlight">embrace the next evolution</span>.</p>
         </section>
 
-        <section class="slide slide--quote" data-slide="20">
+        <section class="slide slide--quote" data-slide="19">
             <span class="slide-label">the end notes…</span>
             <p class="quote-text">The future belongs to <span class="highlight">intent-driven systems</span>.</p>
         </section>
 
-        <section class="slide slide--end" data-slide="21">
-            <span class="slide-label">your mission…</span>
-            <h2 class="slide-title">Stop building the map.</h2>
-            <h2 class="slide-title" style="margin-top: 1rem;"><span class="highlight">Start building the destination.</span></h2>
-            <p class="slide-content" style="margin-top: 3rem; font-size: 0.8em;">(Let's Discuss)</p>
+        <section class="slide slide--end" data-slide="20">
+            <span class="slide-label">thank you…</span>
+            <p class="quote-text" style="font-size: clamp(1.8rem, 3.5vw, 2.5rem); max-width: 800px; line-height: 1.6;">
+                <span class="highlight">The best apps don't ask questions.</span>
+                <br>
+                They understand intent.
+            </p>
+            <p class="slide-content" style="margin-top: 3rem; font-size: 0.9em; opacity: 0.8;">Let's build that future together.</p>
         </section>
     </div>
 
@@ -829,7 +1152,7 @@
         // ============================================
         // CONFIGURATION
         // ============================================
-        const MOUSE_ENABLED = true; // Set to false to hide the mouse
+        const MOUSE_ENABLED = false; // Set to false to hide the mouse
 
         // ============================================
         // PRESENTATION LOGIC
@@ -1123,5 +1446,24 @@
             window.mouseBuddy = new MouseBuddy();
         });
     </script>
+
+    <!-- Hexagon Corner Animation -->
+    <div class="hex-corner">
+        <svg class="hex h1" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h2" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h3" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h4" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h5" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h6" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h7" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h8" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h9" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h10" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h11" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h12" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h13" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+    </div>
+
 </body>
+
 </html>
