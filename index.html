@@ -262,6 +262,164 @@
         .slide.active .slide-list li:nth-child(5) { transition-delay: 0.7s; }
         .slide.active .slide-list li:nth-child(6) { transition-delay: 0.8s; }
 
+        /* Timeline Styles */
+        .timeline {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            max-width: 100%;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s var(--transition-smooth);
+            position: relative;
+        }
+
+        .slide.active .timeline-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item:nth-child(1) { transition-delay: 0.3s; }
+        .timeline-item:nth-child(2) { transition-delay: 0.4s; }
+        .timeline-item:nth-child(3) { transition-delay: 0.5s; }
+        .timeline-item:nth-child(4) { transition-delay: 0.6s; }
+        .timeline-item:nth-child(5) { transition-delay: 0.7s; }
+        .timeline-item:nth-child(6) { transition-delay: 0.8s; }
+        .timeline-item:nth-child(7) { transition-delay: 0.9s; }
+
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            background: var(--accent-teal);
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.2);
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .timeline-item:hover .timeline-dot {
+            transform: scale(1.3);
+            box-shadow: 0 0 0 6px rgba(0, 184, 148, 0.3);
+        }
+
+        .timeline-content {
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            color: var(--text-primary);
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .timeline-connector {
+            position: absolute;
+            left: -1.5rem;
+            width: 1.5rem;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-teal));
+            top: 10px;
+        }
+
+        .timeline-item:first-child .timeline-connector {
+            display: none;
+        }
+
+        /* Interactions Grid */
+        .interactions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            max-width: 900px;
+            margin-top: 3rem;
+        }
+
+        .interaction-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 2rem 2.5rem;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.08) 0%, rgba(0, 184, 148, 0.04) 100%);
+            border: 2px solid rgba(0, 184, 148, 0.2);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interaction-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-teal), transparent);
+            opacity: 0;
+            transition: opacity 0.3s var(--transition-smooth);
+        }
+
+        .slide.active .interaction-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .interaction-card:hover {
+            border-color: var(--accent-teal);
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.15) 0%, rgba(0, 184, 148, 0.08) 100%);
+            transform: translateY(-8px);
+        }
+
+        .interaction-card:hover::before {
+            opacity: 1;
+        }
+
+        .interaction-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-teal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .interaction-label {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .interaction-description {
+            font-family: var(--font-body);
+            font-weight: 400;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        .slide.active .interaction-card:nth-child(1) { transition-delay: 0.3s; }
+        .slide.active .interaction-card:nth-child(2) { transition-delay: 0.4s; }
+        .slide.active .interaction-card:nth-child(3) { transition-delay: 0.5s; }
+        .slide.active .interaction-card:nth-child(4) { transition-delay: 0.6s; }
+
         /* Title Slide Special */
         .slide--title {
             text-align: left;
@@ -505,6 +663,61 @@
                 display: none;
             }
         }
+        
+        /* --- BLOB ANIMATION (Bottom Right) --- */
+        .shape-container {
+            position: fixed;
+            bottom: -80px;
+            right: -80px;
+            width: 600px;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .blob {
+            width: 450px;
+            height: 450px;
+            background: linear-gradient(135deg, #6ee7b7 0%, #34d399 50%, #059669 100%);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: 
+                morphBlob 15s ease-in-out infinite alternate, 
+                swayBlob 8s ease-in-out infinite alternate;
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+            opacity: 0.9;
+        }
+
+        .ring {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border: 2px solid rgba(5, 150, 105, 0.1);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            animation: rotateRing 30s linear infinite reverse;
+            z-index: -1;
+        }
+
+        @keyframes morphBlob {
+            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+            100% { border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%; }
+        }
+
+        @keyframes swayBlob {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(20px, -20px); }
+        }
+
+        @keyframes rotateRing {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* --- Right Side Illustration Container --- */
 .slide-illustration {
     position: absolute;
@@ -559,10 +772,318 @@
     }
 }
 
+/* --- HEXAGON CORNER ANIMATION --- */
+.hex-corner {
+    position: fixed;
+    bottom: -10px;
+    right: -10px;
+    width: 350px;
+    height: 250px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.hex {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+    
+    /* DEFAULT STATE - Subtle teal */
+    stroke: var(--accent-teal);
+    opacity: 0.2;
+    stroke-width: 1px;
+    
+    /* Animation applied to all */
+    animation: hexaglow 6s ease-in-out infinite;
+}
+
+/* --- HEXAGON ANIMATION - Using highlight color (teal) --- */
+@keyframes hexaglow {
+    0%, 100% {
+        stroke: var(--accent-teal);
+        opacity: 0.2;
+        stroke-width: 1px;
+        filter: drop-shadow(0 0 0 transparent);
+    }
+    50% {
+        stroke: var(--accent-teal);
+        opacity: 0.8;
+        stroke-width: 2px;
+        filter: drop-shadow(0 0 8px rgba(0, 184, 148, 0.5));
+    }
+}
+
+/* Grid positioning for hexagons */
+.h1 { bottom: 0; right: 0; animation-delay: 0s; }
+.h2 { bottom: 0; right: 65px; animation-delay: 2s; }
+.h3 { bottom: 0; right: 130px; animation-delay: 4s; }
+.h4 { bottom: 0; right: 195px; animation-delay: 1s; }
+.h5 { bottom: 50px; right: 32px; animation-delay: 3s; }
+.h6 { bottom: 50px; right: 97px; animation-delay: 1s; }
+.h7 { bottom: 50px; right: 162px; animation-delay: 5s; }
+.h8 { bottom: 50px; right: 227px; animation-delay: 2.5s; }
+.h9 { bottom: 100px; right: 0; animation-delay: 1.5s; }
+.h10 { bottom: 100px; right: 65px; animation-delay: 4.5s; }
+.h11 { bottom: 100px; right: 130px; animation-delay: 0.5s; }
+.h12 { bottom: 150px; right: 32px; animation-delay: 3.5s; }
+.h13 { bottom: 150px; right: 97px; animation-delay: 2s; }
+
 /* Mobile: Hide images to save space */
 @media (max-width: 1024px) {
     .slide-illustration {
         display: none;
+    }
+}
+
+/* --- AUTOPLAY UI STYLES --- */
+.autoplay-prompt {
+    animation: fadeInUp 0.8s ease-in-out 0.8s forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.autoplay-start-btn {
+    padding: 1rem 2.5rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    background: linear-gradient(135deg, var(--accent-teal) 0%, #00CEC9 100%);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    box-shadow: 0 8px 30px rgba(0, 184, 148, 0.3);
+}
+
+.autoplay-start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0, 184, 148, 0.4);
+}
+
+.autoplay-start-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Bottom-Left Autoplay Control */
+.autoplay-control {
+    position: fixed;
+    bottom: 2.5rem;
+    left: 2rem;
+    z-index: 1000;
+    opacity: 0.15;
+    transition: opacity 0.3s var(--transition-smooth);
+}
+
+.autoplay-control:hover {
+    opacity: 1;
+}
+
+.autoplay-control-btn {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(0, 184, 148, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    color: var(--accent-teal);
+}
+
+.autoplay-control-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--accent-teal);
+    transform: scale(1.05);
+}
+
+.autoplay-control-btn:active {
+    transform: scale(0.98);
+}
+
+.autoplay-control-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+/* Status indicator for autoplay */
+.autoplay-status {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s var(--transition-smooth);
+}
+
+.autoplay-control:hover .autoplay-status {
+    opacity: 1;
+}
+
+/* Autoplay Timer */
+.autoplay-timer {
+    position: fixed;
+    bottom: 1rem;
+    left: 2rem;
+    z-index: 1000;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.4;
+    transition: opacity 0.3s var(--transition-smooth);
+    letter-spacing: 0.05em;
+}
+
+.autoplay-control:hover ~ .autoplay-timer,
+.autoplay-timer:hover {
+    opacity: 0.8;
+}
+
+/* Subtitle Control Button */
+.subtitle-control {
+    position: fixed;
+    bottom: 2.5rem;
+    left: 6rem;
+    z-index: 1000;
+    opacity: 0.15;
+    transition: opacity 0.3s var(--transition-smooth);
+}
+
+.subtitle-control:hover {
+    opacity: 1;
+}
+
+.subtitle-control-btn {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(0, 184, 148, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    color: var(--accent-teal);
+}
+
+.subtitle-control-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--accent-teal);
+    transform: scale(1.05);
+}
+
+.subtitle-control-btn:active {
+    transform: scale(0.98);
+}
+
+.subtitle-control-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+.subtitle-control-btn.disabled {
+    opacity: 0.5;
+    border-color: #ccc;
+    color: #999;
+}
+
+.subtitle-control-btn.disabled svg {
+    stroke: #999;
+}
+
+.subtitle-status {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s var(--transition-smooth);
+}
+
+.subtitle-control:hover .subtitle-status {
+    opacity: 1;
+}
+
+/* Subtitle Container */
+.subtitle-container {
+    position: fixed;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: 90%;
+    z-index: 999;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s var(--transition-smooth);
+}
+
+.subtitle-text {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+    line-height: 1.5;
+    color: white;
+    text-align: center;
+    margin: 0;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .subtitle-container {
+        bottom: 2rem;
+        padding: 0.4rem 0.8rem;
+        max-width: 95%;
+    }
+    
+    .subtitle-text {
+        white-space: normal;
+    }
+    
+    .subtitle-control {
+        left: 4.5rem;
     }
 }
     </style>
@@ -587,6 +1108,11 @@
             <ellipse cx="25" cy="26" rx="20" ry="18" fill="#0d0d0d"/>
         </svg>
     </div>
+
+    <!-- <div class="shape-container">
+        <div class="ring"></div>
+        <div class="blob"></div>
+    </div> -->
 
     <div class="mouse-container" id="mouseContainer">
         <div class="mouse-character" id="mouseCharacter">
@@ -621,33 +1147,98 @@
         </div>
     </div>
 
+    <!-- Autoplay Control Button -->
+    <div class="autoplay-control" id="autoplayControl" style="display: none;">
+        <button class="autoplay-control-btn" id="autoplayControlBtn" aria-label="Toggle autoplay">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        </button>
+        <div class="autoplay-status" id="autoplayStatus">Autoplay: Playing</div>
+    </div>
+    
+    <!-- Subtitle Toggle Button -->
+    <div class="subtitle-control" id="subtitleControl" style="display: none;">
+        <button class="subtitle-control-btn" id="subtitleControlBtn" aria-label="Toggle subtitles">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M7 15h4M13 15h4M7 11h2M13 11h2"></path>
+            </svg>
+        </button>
+        <div class="subtitle-status" id="subtitleStatus">Subtitles: On</div>
+    </div>
+    
+    <!-- Autoplay Timer -->
+    <div class="autoplay-timer" id="autoplayTimer" style="display: none;">Next slide in 00:00</div>
+    
+    <!-- Subtitle Display -->
+    <div class="subtitle-container" id="subtitleContainer" style="display: none;">
+        <p class="subtitle-text" id="subtitleText"></p>
+    </div>
+
     <div class="presentation" id="presentation">
-        <section class="slide slide--title active" data-slide="1">
-            <span class="slide-label">from</span>
-            <h1 class="slide-title">WORKFLOW-DRIVEN</h1>
-            <span class="slide-label">to</span>
-            <h1 class="slide-title">INTENT-DRIVEN<br>DESIGN</h1>
+        <section class="slide slide--title active" data-slide="1" data-speech="Every few decades, the technology world experiences a shift so profound that it rewrites the rules — not just for developers or designers — but for how humans interact with machines. Today, I'll walk you through the next such shift. A shift from workflow-driven design to intent-driven design. A shift that will define the next generation of software.">
+            <span class="slide-label">the next evolution</span>
+            
+            <h1 class="slide-title">The Future of Apps</h1>
+            
+            <p class="slide-content" style="margin-top: 1.5rem; font-size: 1.2rem; letter-spacing: 1px;">
+                Moving from <span style="opacity: 0.5; text-decoration: line-through;">Workflows</span> 
+                to <span class="highlight">Intent</span>
+            </p>
+            
+            <div class="autoplay-prompt" id="autoplayPrompt" style="margin-top: 3rem; text-align: center; opacity: 0; transform: translateY(20px); transition: all 0.6s ease-in-out 0.8s;">
+                <button id="autoplayStartBtn" class="autoplay-start-btn">Enable Autoplay</button>
+            </div>
         </section>
 
-        <section class="slide" data-slide="2">
+        <section class="slide" data-slide="2" data-speech="When industries change slowly, you can afford to ignore trends. But when they change rapidly — like right now — missing the shift is fatal. Companies don't lose because of bad engineers, bad features, or bad UI. They lose because they continued building for a world that no longer exists.">
             <span class="slide-label">why this matters…</span>
             <h2 class="slide-title">If you miss a technological shift, you don't fall behind…</h2>
             <p class="slide-content"><strong>You disappear.</strong></p>
         </section>
 
-        <section class="slide" data-slide="3">
+        <section class="slide" data-slide="3" data-speech="Let me take you on a walk through the last three decades. The Internet connected information. PCs democratized productivity. Mobile made computing personal. Touch made interaction natural. The Cloud made everything scalable. IoT connected devices. And now AI is making applications intelligent. Each shift forced us to rebuild how apps work. And each time, those who adapted early grew exponentially.">
             <span class="slide-label">tech revolutions…</span>
-            <ul class="slide-list">
-                <li>Internet</li>
-                <li>PC</li>
-                <li>Mobile</li>
-                <li>Touch</li>
-                <li>Cloud</li>
-                <li>IoT</li>
-            </ul>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">PC</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">Internet</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">Mobile</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">Touch</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">Cloud</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">IoT</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-connector"></div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">AI</div>
+                </div>
+            </div>
         </section>
 
-        <section class="slide" data-slide="4">
+        <section class="slide" data-slide="4" data-speech="When the Internet exploded, Google embraced it. Yahoo got comfortable. When mobile arrived, Apple and Android leaned in. Blackberry insisted people wanted keyboards. When streaming landed, Netflix adapted. Blockbuster doubled down on DVDs. The difference? Winners adapted to the shift. Laggards defended their comfort zone.">
             <span class="slide-label">winners vs laggards…</span>
             <ul class="slide-list">
                 <li><span class="highlight">Google</span> vs Yahoo</li>
@@ -656,7 +1247,7 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="5">
+        <section class="slide" data-slide="5" data-speech="Mobile-first wasn't a UI change. It was a mindset change. Everything evolved: app architecture, performance expectations, business models, user journeys, UI patterns, and onboarding flow. The companies that treated mobile as optional lost. Those who made it a core strategy won. We're standing at the same kind of pivot today, except bigger.">
             <span class="slide-label">the mobile-first shift</span>
             <ul class="slide-list">
                 <li>UI</li>
@@ -666,34 +1257,49 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="6">
+        <section class="slide" data-slide="6" data-speech="We've reached a strange stage where apps have become frustrating again. Every task needs ten clicks. Every button asks the user to think. Every workflow requires memory. We built apps that are powerful but mentally expensive. Users are tired. They're overwhelmed. AI now gives us a chance to reverse that. To make software feel magical again.">
             <span class="slide-label">where we stand today…</span>
             <h2 class="slide-title">Decision Fatigue.</h2>
             <p class="slide-content">Too many apps.<br>Too many clicks.</p>
         </section>
 
-        <section class="slide" data-slide="7">
-            <span class="slide-label">the core shift…</span>
-            <div class="comparison-list slide-content">
-                <div class="comparison-item"><span>Workflow</span> <span class="arrow">→</span> <span class="highlight">Intent</span></div>
-                <div class="comparison-item"><span>Steps</span> <span class="arrow">→</span> <span class="highlight">Goals</span></div>
-                <div class="comparison-item"><span>Interfaces</span> <span class="arrow">→</span> <span class="highlight">Conversations</span></div>
-                <div class="comparison-item"><span>Manual</span> <span class="arrow">→</span> <span class="highlight">Predictive</span></div>
+        <section class="slide" data-slide="7" data-speech="The shift we are entering is simple to say but massive in effect: Users will no longer follow workflows; they will express intent. Instead of: Click here, Go there, Fill this, Submit. They will simply say: I need to get this done. And the system orchestrates the workflow behind the scenes.">
+            <span class="slide-label">the difference is visible…</span>
+            <h2 class="slide-title">Booking a Flight</h2>
+            
+            <div class="comparison-container" style="display: flex; gap: 2rem; margin-top: 2rem; text-align: left;">
+                <div class="comparison-left" style="flex: 1; opacity: 0.5; border-right: 1px solid #fff;">
+                    <h4 style="margin-bottom:0.5rem;">The Old Way</h4>
+                    <p class="slide-content">
+                        1. Open App<br>
+                        2. Select Dates<br>
+                        3. Filter Airlines<br>
+                        4. Compare Prices<br>
+                        5. Select Seat<br>
+                        6. Enter Payment
+                    </p>
+                </div>
+                <div class="comparison-right" style="flex: 1; padding-left: 1rem;">
+                    <h4 class="highlight" style="margin-bottom:0.5rem;">The Intent Way</h4>
+                    <p class="slide-content">
+                        "Get me on the first flight to NYC tomorrow morning under $400."
+                    </p>
+                </div>
             </div>
         </section>
 
-        <section class="slide" data-slide="8">
+        <section class="slide" data-slide="8" data-speech="A workflow-driven system is predictable but rigid. It requires the user to know the path, the sequence, the form fields, and the navigation. In this model, the user must adapt to the system. It was the best we could do for twenty-five years. But not anymore.">
             <span class="slide-label">workflow-driven design…</span>
             <h2 class="slide-title">Rigid.<br>Step-based.<br>User must know how.</h2>
         </section>
 
-        <section class="slide" data-slide="9">
+        <section class="slide" data-slide="9" data-speech="Intent-driven systems flip the equation. The user states a goal. The system uses intelligence to break it into steps, validate, fetch data, generate workflows, and produce output. It's not automation. It's not macro scripting. It's true understanding.">
             <span class="slide-label">intent-driven design…</span>
             <h2 class="slide-title">Users say <span class="highlight">WHAT</span>.</h2>
             <p class="slide-content">System decides <strong>HOW</strong>.</p>
         </section>
 
-        <section class="slide" data-slide="10">
+        <section class="slide" data-slide="10" data-speech="Today, generating a report means going to analytics, choosing filters, selecting fields, and clicking export. Tomorrow, the user will just say: Generate my quarterly sales report and highlight weak regions. The app identifies everything: data, segments, time windows, insights, formatting. The human gives direction. The system does execution.">
             <span class="slide-label">real life example…</span>
             <ul class="slide-list">
                 <li>"Generate my quarterly sales report."</li>
@@ -702,50 +1308,69 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="11">
+        <section class="slide" data-slide="11" data-speech="Today, debugging cloud issues is complex. You check logs, metrics, alerts, configurations, and infrastructure as code. Tomorrow, you simply say: My API is timing out. Fix it. The system diagnoses logs, finds the misconfigured scaling rule, generates a patch, explains the fix, and applies it with confirmation. This isn't science fiction. This is already happening at the prototype level. AI is finally capable of understanding intent.">
             <span class="slide-label">the future interactions…</span>
-            <ul class="slide-list">
-                <li>Voice.</li>
-                <li>Text.</li>
-                <li>Vision.</li>
-                <li>Gesture.</li>
-            </ul>
+            <div class="interactions-grid">
+                <div class="interaction-card">
+                    <div class="interaction-icon">🎤</div>
+                    <div class="interaction-label">Voice</div>
+                    <div class="interaction-description">Natural language commands</div>
+                </div>
+                <div class="interaction-card">
+                    <div class="interaction-icon">💬</div>
+                    <div class="interaction-label">Text</div>
+                    <div class="interaction-description">Conversational AI</div>
+                </div>
+                <div class="interaction-card">
+                    <div class="interaction-icon">👁️</div>
+                    <div class="interaction-label">Vision</div>
+                    <div class="interaction-description">Visual recognition</div>
+                </div>
+                <div class="interaction-card">
+                    <div class="interaction-icon">👆</div>
+                    <div class="interaction-label">Gesture</div>
+                    <div class="interaction-description">Motion-based input</div>
+                </div>
+            </div>
         </section>
 
-        <section class="slide" data-slide="12">
-            <span class="slide-label">a new interaction layer…</span>
-            <h2 class="slide-title">Apps that act on their own.</h2>
-            <p class="slide-content">Devices that predict needs.</p>
+        <section class="slide" data-slide="12" data-speech="Our future apps won't be bound to screens. People will interact through voice, camera, gestures, AR glasses, and ambient devices. Workflows are too rigid for this world. Intent-driven design adapts naturally. It works regardless of input method.">
+            <span class="slide-label">the new user…</span>
+            <h2 class="slide-title">You aren't designing for eyes anymore.</h2>
+            <p class="slide-content">You are designing for <span class="highlight">APIs</span> that AI agents read.</p>
+            <p class="slide-content" style="font-size: 0.6em; opacity: 0.7; margin-top: 1rem;">(If an AI can't read your app, a human won't find it.)</p>
         </section>
 
-        <section class="slide" data-slide="13">
-            <span class="slide-label">personal AI agents…</span>
-            <h2 class="slide-title">Agents will be your new users.</h2>
-        </section>
-
-        <section class="slide" data-slide="14">
+        <section class="slide" data-slide="13" data-speech="In the next few years, every person will have a personal AI agent taking actions, scheduling tasks, researching, and executing workflows. Your app must be usable by an agent, not just a human. Agents will be your new users.">
             <span class="slide-label">what if we don't adapt…</span>
             <h2 class="slide-title">Apps will become un-integratable.<br>Unusable.<br>Invisible.</h2>
         </section>
 
-        <section class="slide" data-slide="15">
-            <span class="slide-label">the "mindset" shift…</span>
+        <section class="slide" data-slide="14" data-speech="If your app requires too many steps, too much clicking, too much remembering, or too much UI navigation, then AI agents won't integrate with it. Users won't tolerate it. And competitors who redesign for intent will swallow the market.">
+            <span class="slide-label">the mindset shift…</span>
             <h2 class="slide-title">Don't design screens.</h2>
             <p class="slide-content"><strong>Design outcomes.</strong></p>
         </section>
 
-        <section class="slide" data-slide="16">
-            <span class="slide-label">the architecture…</span>
+        <section class="slide" data-slide="15" data-speech="Your product roadmap must evolve. Stop building pages, screens, and menus. Start defining capabilities and outcomes. Ask: What goal does the user want achieved? What knowledge does the system need? What steps can AI automate? How should the UI adapt dynamically? This is the new product design philosophy.">
+            <span class="slide-label">the new blueprint…</span>
             <ul class="slide-list">
-                <li>Semantic Layer.</li>
-                <li>Agent-friendly APIs.</li>
-                <li>Generators.</li>
-                <li>Validators.</li>
-                <li>Adaptive UI.</li>
+                <li style="margin-bottom: 1rem;">
+                    <strong>Semantic Layer</strong>
+                    <br><span style="font-size: 0.6em; opacity: 0.7; font-weight: normal;">(Teaching the machine what "Urgent" means)</span>
+                </li>
+                <li style="margin-bottom: 1rem;">
+                    <strong>Agent-friendly APIs</strong>
+                    <br><span style="font-size: 0.6em; opacity: 0.7; font-weight: normal;">(Doors that AI can open without help)</span>
+                </li>
+                <li style="margin-bottom: 1rem;">
+                    <strong>Generative UI</strong>
+                    <br><span style="font-size: 0.6em; opacity: 0.7; font-weight: normal;">(Screens that draw themselves when needed)</span>
+                </li>
             </ul>
         </section>
 
-        <section class="slide" data-slide="17">
+        <section class="slide" data-slide="16" data-speech="To make this real, we must change our architecture. We need a semantic layer mapping user intents to system capabilities. Agent-friendly APIs for actions, not endpoints. Generators for workflows, documents, UIs, and queries. Validators ensuring safety and correctness. And adaptive UI that changes dynamically. This is not about replacing your stack. This is about rethinking your foundations.">
             <span class="slide-label">the principles…</span>
             <ul class="slide-list">
                 <li><span class="highlight">1.</span> Make the user think less.</li>
@@ -754,31 +1379,35 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="18">
-            <span class="slide-label">the future…</span>
-            <ul class="slide-list">
-                <li><span class="highlight">1.</span> AR Glasses</li>
-                <li><span class="highlight">2.</span> Ambient AI</li>
-                <li><span class="highlight">3.</span> IoT Mesh</li>
+        <section class="slide" data-slide="17" data-speech="Three principles define intent-driven design: First, reduce cognitive load. Second, shift execution to the system. Third, remove friction so the user almost forgets there is an app. Invisible software is the future.">
+            <span class="slide-label">the vanishing act…</span>
+            <h2 class="slide-title">The best interface is <span class="highlight">no interface</span>.</h2>
+            <ul class="slide-list" style="margin-top: 2rem;">
+                <li>No Menus.</li>
+                <li>No Forms.</li>
+                <li>Just <span class="highlight">Results</span>.</li>
             </ul>
-            <p class="slide-content" style="margin-top: 2rem;"><strong>Workflow design simply cannot survive.</strong></p>
         </section>
 
-        <section class="slide" data-slide="19">
+        <section class="slide" data-slide="18" data-speech="When Meta and Apple glasses become mainstream, the idea of a button-based app will collapse. Your software must understand spoken intent, understand gestures, visualize data in three-dee, and take actions in the background. Workflow design simply cannot survive this world.">
             <span class="slide-label">resistance is natural…</span>
             <h2 class="slide-title">We can cling to workflows…</h2>
             <p class="slide-content">Or we can <span class="highlight">embrace the next evolution</span>.</p>
         </section>
 
-        <section class="slide slide--quote" data-slide="20">
+        <section class="slide slide--quote" data-slide="19" data-speech="Every revolution faces resistance. People said mobile apps are toys. Touchscreens are gimmicks. Cloud will never be secure. AI can't understand humans. And yet here we are. We can cling to workflows, or we can embrace the next evolution.">
             <span class="slide-label">the end notes…</span>
             <p class="quote-text">The future belongs to <span class="highlight">intent-driven systems</span>.</p>
         </section>
 
-        <section class="slide slide--end" data-slide="21">
-            <span class="slide-label">let's build the future…</span>
-            <h2 class="slide-title">any questions…</h2>
-            <p class="slide-content">AI will answer better…harsh but <span class="highlight">TRUE</span>.</p>
+        <section class="slide slide--end" data-slide="20" data-speech="Let me close with this: The companies that survived past revolutions weren't always the biggest. They were the fastest to adapt. This revolution is no different. We're moving from a world where users work for software to a world where software works for users. The future is intent-driven. And the time to build it is now.">
+            <span class="slide-label">thank you…</span>
+            <p class="quote-text" style="font-size: clamp(1.8rem, 3.5vw, 2.5rem); max-width: 800px; line-height: 1.6;">
+                <span class="highlight">The best apps don't ask questions.</span>
+                <br>
+                They understand intent.
+            </p>
+            <p class="slide-content" style="margin-top: 3rem; font-size: 0.9em; opacity: 0.8;">Let's build that future together.</p>
         </section>
     </div>
 
@@ -804,7 +1433,7 @@
         // ============================================
         // CONFIGURATION
         // ============================================
-        const MOUSE_ENABLED = true; // Set to false to hide the mouse
+        const MOUSE_ENABLED = false; // Set to false to hide the mouse
 
         // ============================================
         // PRESENTATION LOGIC
@@ -896,6 +1525,336 @@
                 
                 const progress = (this.currentSlide / this.totalSlides) * 100;
                 this.progressBar.style.width = `${progress}%`;
+            }
+        }
+
+        // ============================================
+        // SPEECH MANAGER CLASS
+        // ============================================
+        class SpeechManager {
+            constructor(presentation) {
+                this.presentation = presentation;
+                this.synth = window.speechSynthesis;
+                this.isPlaying = false;
+                this.isPaused = false;
+                this.currentUtterance = null;
+                this.timerInterval = null;
+                this.timeRemaining = 0;
+
+                // Get available voices and set to female if available
+                this.voices = [];
+                this.selectedVoice = null;
+                this.initializeVoices();
+
+                // UI Elements
+                this.autoplayStartBtn = document.getElementById('autoplayStartBtn');
+                this.autoplayControl = document.getElementById('autoplayControl');
+                this.autoplayControlBtn = document.getElementById('autoplayControlBtn');
+                this.autoplayStatus = document.getElementById('autoplayStatus');
+                this.autoplayTimer = document.getElementById('autoplayTimer');
+                
+                // Subtitle Elements
+                this.subtitleControl = document.getElementById('subtitleControl');
+                this.subtitleControlBtn = document.getElementById('subtitleControlBtn');
+                this.subtitleStatus = document.getElementById('subtitleStatus');
+                this.subtitleContainer = document.getElementById('subtitleContainer');
+                this.subtitleText = document.getElementById('subtitleText');
+                this.subtitlesEnabled = true;
+                
+                // Subtitle word tracking
+                this.subtitleWords = [];
+                this.currentWordIndex = 0;
+                this.subtitleInterval = null;
+                this.wordsPerChunk = 12; // Show 12 words at a time
+
+                this.bindEvents();
+            }
+
+            initializeVoices() {
+                const populateVoices = () => {
+                    this.voices = this.synth.getVoices();
+                    // Try to find a female voice (preferring natural-sounding ones)
+                    this.selectedVoice = this.voices.find(v => v.name.includes('Female') || v.name.includes('female')) ||
+                                        this.voices.find(v => v.name.includes('woman') || v.name.includes('Woman')) ||
+                                        this.voices.find(v => !v.name.includes('Male') && !v.name.includes('male')) ||
+                                        this.voices[0];
+                };
+
+                if (this.synth.getVoices().length > 0) {
+                    populateVoices();
+                } else {
+                    this.synth.onvoiceschanged = populateVoices;
+                }
+            }
+
+            bindEvents() {
+                this.autoplayStartBtn.addEventListener('click', () => this.startAutoplay());
+                this.autoplayControlBtn.addEventListener('click', () => this.togglePlayPause());
+                this.subtitleControlBtn.addEventListener('click', () => this.toggleSubtitles());
+            }
+
+            startAutoplay() {
+                this.autoplayStartBtn.style.display = 'none';
+                this.autoplayControl.style.display = 'block';
+                this.subtitleControl.style.display = 'block';
+                this.autoplayTimer.style.display = 'block';
+                this.isPlaying = true;
+                this.isPaused = false;
+                this.updateControlIcon();
+                this.speakSlide(1);
+            }
+
+            speakSlide(slideNum) {
+                const slide = this.presentation.slides[slideNum - 1];
+                if (!slide) return;
+
+                // Cancel any ongoing speech
+                this.synth.cancel();
+                this.clearTimer();
+
+                const speechText = slide.getAttribute('data-speech');
+                if (!speechText) {
+                    // If no speech content, skip to next slide after a delay
+                    setTimeout(() => this.goToNextSlide(), 1500);
+                    return;
+                }
+
+                this.currentUtterance = new SpeechSynthesisUtterance(speechText);
+                this.currentUtterance.voice = this.selectedVoice;
+                this.currentUtterance.rate = 0.95; // Slightly slower for clarity
+                this.currentUtterance.pitch = 1;
+                this.currentUtterance.volume = 1;
+
+                this.currentUtterance.onstart = () => {
+                    this.isPlaying = true;
+                    this.isPaused = false;
+                    this.updateControlIcon();
+                    this.showSubtitle(speechText, this.currentSpeechDuration);
+                };
+
+                this.currentUtterance.onend = () => {
+                    this.hideSubtitle();
+                    if (!this.isPaused && this.isPlaying) {
+                        this.goToNextSlide();
+                    }
+                };
+
+                this.currentUtterance.onerror = (e) => {
+                    console.error('Speech error:', e);
+                    this.hideSubtitle();
+                    this.goToNextSlide();
+                };
+
+                // Calculate accurate duration based on speech rate and text length
+                const estimatedDuration = this.calculateSpeechDuration(speechText);
+                this.setupTimer(estimatedDuration);
+                
+                // Store duration for subtitle sync
+                this.currentSpeechDuration = estimatedDuration;
+
+                this.synth.speak(this.currentUtterance);
+            }
+
+            calculateSpeechDuration(text) {
+                // More accurate calculation based on:
+                // - Average speaking rate: ~150 words per minute at normal speed
+                // - Current speed rate: 0.95 (slightly slower)
+                // - Character-based calculation for better accuracy
+                
+                const words = text.trim().split(/\s+/).length;
+                const chars = text.length;
+                
+                // Adjusted WPM based on speech rate (0.95)
+                // At normal rate (1.0): ~150 WPM
+                // At 0.95 rate: ~142 WPM
+                const adjustedWPM = 150 * 0.95;
+                
+                // Calculate duration in milliseconds
+                const durationMs = (words / adjustedWPM) * 60 * 1000;
+                
+                return durationMs;
+            }
+
+            setupTimer(duration) {
+                this.clearTimer();
+                this.timeRemaining = Math.ceil(duration / 1000);
+                this.updateTimerDisplay();
+
+                this.timerInterval = setInterval(() => {
+                    if (this.isPlaying && !this.isPaused) {
+                        this.timeRemaining--;
+                        this.updateTimerDisplay();
+
+                        if (this.timeRemaining <= 0) {
+                            this.clearTimer();
+                        }
+                    }
+                }, 1000);
+            }
+
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timeRemaining / 60);
+                const seconds = this.timeRemaining % 60;
+                this.autoplayTimer.textContent = `Next slide in ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            clearTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            }
+
+            goToNextSlide() {
+                if (this.isPlaying && this.presentation.currentSlide < this.presentation.totalSlides) {
+                    this.presentation.goTo(this.presentation.currentSlide + 1);
+                    this.speakSlide(this.presentation.currentSlide);
+                } else {
+                    this.stopAutoplay();
+                }
+            }
+
+            togglePlayPause() {
+                if (!this.isPlaying) {
+                    this.resume();
+                } else if (this.isPaused) {
+                    this.resume();
+                } else {
+                    this.pause();
+                }
+            }
+
+            pause() {
+                this.isPaused = true;
+                this.synth.pause();
+                this.updateControlIcon();
+                this.autoplayStatus.textContent = 'Autoplay: Paused';
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+            }
+
+            resume() {
+                this.isPaused = false;
+                this.synth.resume();
+                this.updateControlIcon();
+                this.autoplayStatus.textContent = 'Autoplay: Playing';
+                // Resume timer if there's remaining time
+                if (this.timeRemaining > 0) {
+                    this.setupTimer(this.timeRemaining * 1000);
+                }
+            }
+
+            stopAutoplay() {
+                this.isPlaying = false;
+                this.isPaused = false;
+                this.synth.cancel();
+                this.clearTimer();
+                this.hideSubtitle();
+                this.autoplayControl.style.display = 'none';
+                this.subtitleControl.style.display = 'none';
+                this.autoplayTimer.style.display = 'none';
+                this.autoplayStartBtn.style.display = 'block';
+            }
+
+            updateControlIcon() {
+                const svg = this.autoplayControlBtn.querySelector('svg');
+                if (this.isPaused) {
+                    // Play icon
+                    svg.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+                } else {
+                    // Pause icon
+                    svg.innerHTML = '<rect x="6" y="3" width="4" height="18"></rect><rect x="14" y="3" width="4" height="18"></rect>';
+                }
+            }
+            
+            toggleSubtitles() {
+                this.subtitlesEnabled = !this.subtitlesEnabled;
+                
+                if (this.subtitlesEnabled) {
+                    this.subtitleControlBtn.classList.remove('disabled');
+                    this.subtitleStatus.textContent = 'Subtitles: On';
+                    // Show current subtitle if speech is active
+                    const currentSlide = this.presentation.slides[this.presentation.currentSlide - 1];
+                    const speechText = currentSlide?.getAttribute('data-speech');
+                    if (speechText && this.isPlaying && !this.isPaused && this.currentSpeechDuration) {
+                        this.showSubtitle(speechText, this.currentSpeechDuration);
+                    }
+                } else {
+                    this.subtitleControlBtn.classList.add('disabled');
+                    this.subtitleStatus.textContent = 'Subtitles: Off';
+                    this.hideSubtitle();
+                }
+            }
+            
+            showSubtitle(text, duration) {
+                if (!this.subtitlesEnabled) return;
+                
+                // Split text into words
+                this.subtitleWords = text.split(' ');
+                this.currentWordIndex = 0;
+                
+                // Calculate timing
+                const totalWords = this.subtitleWords.length;
+                const updateInterval = (duration / totalWords) * this.wordsPerChunk;
+                
+                // Show initial chunk
+                this.updateSubtitleChunk();
+                this.subtitleContainer.style.display = 'block';
+                
+                // Clear any existing interval
+                if (this.subtitleInterval) {
+                    clearInterval(this.subtitleInterval);
+                }
+                
+                // Update subtitle progressively
+                this.subtitleInterval = setInterval(() => {
+                    this.currentWordIndex += this.wordsPerChunk;
+                    
+                    if (this.currentWordIndex >= totalWords) {
+                        // Reached the end, show last chunk and stop
+                        this.currentWordIndex = Math.max(0, totalWords - this.wordsPerChunk);
+                        this.updateSubtitleChunk();
+                        clearInterval(this.subtitleInterval);
+                        this.subtitleInterval = null;
+                    } else {
+                        this.updateSubtitleChunk();
+                    }
+                }, updateInterval);
+            }
+            
+            updateSubtitleChunk() {
+                if (!this.subtitlesEnabled || this.subtitleWords.length === 0) return;
+                
+                // Get current chunk of words
+                const chunk = this.subtitleWords.slice(
+                    this.currentWordIndex, 
+                    this.currentWordIndex + this.wordsPerChunk
+                ).join(' ');
+                
+                // Add ellipsis if not at start/end
+                let displayText = chunk;
+                if (this.currentWordIndex > 0) {
+                    displayText = '...' + displayText;
+                }
+                if (this.currentWordIndex + this.wordsPerChunk < this.subtitleWords.length) {
+                    displayText = displayText + '...';
+                }
+                
+                this.subtitleText.textContent = displayText;
+            }
+            
+            hideSubtitle() {
+                // Clear progressive update interval
+                if (this.subtitleInterval) {
+                    clearInterval(this.subtitleInterval);
+                    this.subtitleInterval = null;
+                }
+                
+                this.subtitleContainer.style.display = 'none';
+                this.subtitleText.textContent = '';
+                this.subtitleWords = [];
+                this.currentWordIndex = 0;
             }
         }
 
@@ -1095,8 +2054,29 @@
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
             const presentation = new Presentation();
+            const speechManager = new SpeechManager(presentation);
             window.mouseBuddy = new MouseBuddy();
+            window.speechManager = speechManager;
         });
     </script>
+
+    <!-- Hexagon Corner Animation -->
+    <div class="hex-corner">
+        <svg class="hex h1" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h2" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h3" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h4" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h5" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h6" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h7" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h8" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h9" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h10" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h11" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h12" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+        <svg class="hex h13" viewBox="0 0 100 100"><polygon points="50 5, 93 25, 93 75, 50 95, 7 75, 7 25" /></svg>
+    </div>
+
 </body>
+
 </html>
