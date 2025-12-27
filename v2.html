@@ -838,6 +838,133 @@
         display: none;
     }
 }
+
+/* --- AUTOPLAY UI STYLES --- */
+.autoplay-prompt {
+    animation: fadeInUp 0.8s ease-in-out 0.8s forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.autoplay-start-btn {
+    padding: 1rem 2.5rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    background: linear-gradient(135deg, var(--accent-teal) 0%, #00CEC9 100%);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    box-shadow: 0 8px 30px rgba(0, 184, 148, 0.3);
+}
+
+.autoplay-start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0, 184, 148, 0.4);
+}
+
+.autoplay-start-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Bottom-Left Autoplay Control */
+.autoplay-control {
+    position: fixed;
+    bottom: 2.5rem;
+    left: 2rem;
+    z-index: 1000;
+    opacity: 0.15;
+    transition: opacity 0.3s var(--transition-smooth);
+}
+
+.autoplay-control:hover {
+    opacity: 1;
+}
+
+.autoplay-control-btn {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(0, 184, 148, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    color: var(--accent-teal);
+}
+
+.autoplay-control-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--accent-teal);
+    transform: scale(1.05);
+}
+
+.autoplay-control-btn:active {
+    transform: scale(0.98);
+}
+
+.autoplay-control-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+/* Status indicator for autoplay */
+.autoplay-status {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s var(--transition-smooth);
+}
+
+.autoplay-control:hover .autoplay-status {
+    opacity: 1;
+}
+
+/* Autoplay Timer */
+.autoplay-timer {
+    position: fixed;
+    bottom: 1rem;
+    left: 2rem;
+    z-index: 1000;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.4;
+    transition: opacity 0.3s var(--transition-smooth);
+    letter-spacing: 0.05em;
+}
+
+.autoplay-control:hover ~ .autoplay-timer,
+.autoplay-timer:hover {
+    opacity: 0.8;
+}
     </style>
 </head>
 <body>
@@ -899,8 +1026,21 @@
         </div>
     </div>
 
+    <!-- Autoplay Control Button -->
+    <div class="autoplay-control" id="autoplayControl" style="display: none;">
+        <button class="autoplay-control-btn" id="autoplayControlBtn" aria-label="Toggle autoplay">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        </button>
+        <div class="autoplay-status" id="autoplayStatus">Autoplay: Playing</div>
+    </div>
+    
+    <!-- Autoplay Timer -->
+    <div class="autoplay-timer" id="autoplayTimer" style="display: none;">Next slide in 00:00</div>
+
     <div class="presentation" id="presentation">
-        <section class="slide slide--title active" data-slide="1">
+        <section class="slide slide--title active" data-slide="1" data-speech="Every few decades, the technology world experiences a shift so profound that it rewrites the rules — not just for developers or designers — but for how humans interact with machines. Today, I'll walk you through the next such shift. A shift from workflow-driven design to intent-driven design. A shift that will define the next generation of software.">
             <span class="slide-label">the next evolution</span>
             
             <h1 class="slide-title">The Future of Apps</h1>
@@ -909,15 +1049,19 @@
                 Moving from <span style="opacity: 0.5; text-decoration: line-through;">Workflows</span> 
                 to <span class="highlight">Intent</span>
             </p>
+            
+            <div class="autoplay-prompt" id="autoplayPrompt" style="margin-top: 3rem; text-align: center; opacity: 0; transform: translateY(20px); transition: all 0.6s ease-in-out 0.8s;">
+                <button id="autoplayStartBtn" class="autoplay-start-btn">Enable Autoplay</button>
+            </div>
         </section>
 
-        <section class="slide" data-slide="2">
+        <section class="slide" data-slide="2" data-speech="When industries change slowly, you can afford to ignore trends. But when they change rapidly — like right now — missing the shift is fatal. Companies don't lose because of bad engineers, bad features, or bad UI. They lose because they continued building for a world that no longer exists.">
             <span class="slide-label">why this matters…</span>
             <h2 class="slide-title">If you miss a technological shift, you don't fall behind…</h2>
             <p class="slide-content"><strong>You disappear.</strong></p>
         </section>
 
-        <section class="slide" data-slide="3">
+        <section class="slide" data-slide="3" data-speech="Let me take you on a walk through the last three decades. The Internet connected information. PCs democratized productivity. Mobile made computing personal. Touch made interaction natural. The Cloud made everything scalable. IoT connected devices. And now AI is making applications intelligent. Each shift forced us to rebuild how apps work. And each time, those who adapted early grew exponentially.">
             <span class="slide-label">tech revolutions…</span>
             <div class="timeline">
                 <div class="timeline-item">
@@ -957,7 +1101,7 @@
             </div>
         </section>
 
-        <section class="slide" data-slide="4">
+        <section class="slide" data-slide="4" data-speech="When the Internet exploded, Google embraced it. Yahoo got comfortable. When mobile arrived, Apple and Android leaned in. Blackberry insisted people wanted keyboards. When streaming landed, Netflix adapted. Blockbuster doubled down on DVDs. The difference? Winners adapted to the shift. Laggards defended their comfort zone.">
             <span class="slide-label">winners vs laggards…</span>
             <ul class="slide-list">
                 <li><span class="highlight">Google</span> vs Yahoo</li>
@@ -966,7 +1110,7 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="5">
+        <section class="slide" data-slide="5" data-speech="Mobile-first wasn't a UI change. It was a mindset change. Everything evolved: app architecture, performance expectations, business models, user journeys, UI patterns, and onboarding flow. The companies that treated mobile as optional lost. Those who made it a core strategy won. We're standing at the same kind of pivot today, except bigger.">
             <span class="slide-label">the mobile-first shift</span>
             <ul class="slide-list">
                 <li>UI</li>
@@ -976,13 +1120,13 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="6">
+        <section class="slide" data-slide="6" data-speech="We've reached a strange stage where apps have become frustrating again. Every task needs ten clicks. Every button asks the user to think. Every workflow requires memory. We built apps that are powerful but mentally expensive. Users are tired. They're overwhelmed. AI now gives us a chance to reverse that. To make software feel magical again.">
             <span class="slide-label">where we stand today…</span>
             <h2 class="slide-title">Decision Fatigue.</h2>
             <p class="slide-content">Too many apps.<br>Too many clicks.</p>
         </section>
 
-        <section class="slide" data-slide="7">
+        <section class="slide" data-slide="7" data-speech="The shift we are entering is simple to say but massive in effect: Users will no longer follow workflows; they will express intent. Instead of: Click here, Go there, Fill this, Submit. They will simply say: I need to get this done. And the system orchestrates the workflow behind the scenes.">
             <span class="slide-label">the difference is visible…</span>
             <h2 class="slide-title">Booking a Flight</h2>
             
@@ -1007,18 +1151,18 @@
             </div>
         </section>
 
-        <section class="slide" data-slide="8">
+        <section class="slide" data-slide="8" data-speech="A workflow-driven system is predictable but rigid. It requires the user to know the path, the sequence, the form fields, and the navigation. In this model, the user must adapt to the system. It was the best we could do for twenty-five years. But not anymore.">
             <span class="slide-label">workflow-driven design…</span>
             <h2 class="slide-title">Rigid.<br>Step-based.<br>User must know how.</h2>
         </section>
 
-        <section class="slide" data-slide="9">
+        <section class="slide" data-slide="9" data-speech="Intent-driven systems flip the equation. The user states a goal. The system uses intelligence to break it into steps, validate, fetch data, generate workflows, and produce output. It's not automation. It's not macro scripting. It's true understanding.">
             <span class="slide-label">intent-driven design…</span>
             <h2 class="slide-title">Users say <span class="highlight">WHAT</span>.</h2>
             <p class="slide-content">System decides <strong>HOW</strong>.</p>
         </section>
 
-        <section class="slide" data-slide="10">
+        <section class="slide" data-slide="10" data-speech="Today, generating a report means going to analytics, choosing filters, selecting fields, and clicking export. Tomorrow, the user will just say: Generate my quarterly sales report and highlight weak regions. The app identifies everything: data, segments, time windows, insights, formatting. The human gives direction. The system does execution.">
             <span class="slide-label">real life example…</span>
             <ul class="slide-list">
                 <li>"Generate my quarterly sales report."</li>
@@ -1027,7 +1171,7 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="11">
+        <section class="slide" data-slide="11" data-speech="Today, debugging cloud issues is complex. You check logs, metrics, alerts, configurations, and infrastructure as code. Tomorrow, you simply say: My API is timing out. Fix it. The system diagnoses logs, finds the misconfigured scaling rule, generates a patch, explains the fix, and applies it with confirmation. This isn't science fiction. This is already happening at the prototype level. AI is finally capable of understanding intent.">
             <span class="slide-label">the future interactions…</span>
             <div class="interactions-grid">
                 <div class="interaction-card">
@@ -1053,25 +1197,25 @@
             </div>
         </section>
 
-        <section class="slide" data-slide="12">
+        <section class="slide" data-slide="12" data-speech="Our future apps won't be bound to screens. People will interact through voice, camera, gestures, AR glasses, and ambient devices. Workflows are too rigid for this world. Intent-driven design adapts naturally. It works regardless of input method.">
             <span class="slide-label">the new user…</span>
             <h2 class="slide-title">You aren't designing for eyes anymore.</h2>
             <p class="slide-content">You are designing for <span class="highlight">APIs</span> that AI agents read.</p>
             <p class="slide-content" style="font-size: 0.6em; opacity: 0.7; margin-top: 1rem;">(If an AI can't read your app, a human won't find it.)</p>
         </section>
 
-        <section class="slide" data-slide="13">
+        <section class="slide" data-slide="13" data-speech="In the next few years, every person will have a personal AI agent taking actions, scheduling tasks, researching, and executing workflows. Your app must be usable by an agent, not just a human. Agents will be your new users.">
             <span class="slide-label">what if we don't adapt…</span>
             <h2 class="slide-title">Apps will become un-integratable.<br>Unusable.<br>Invisible.</h2>
         </section>
 
-        <section class="slide" data-slide="14">
-            <span class="slide-label">the "mindset" shift…</span>
+        <section class="slide" data-slide="14" data-speech="If your app requires too many steps, too much clicking, too much remembering, or too much UI navigation, then AI agents won't integrate with it. Users won't tolerate it. And competitors who redesign for intent will swallow the market.">
+            <span class="slide-label">the mindset shift…</span>
             <h2 class="slide-title">Don't design screens.</h2>
             <p class="slide-content"><strong>Design outcomes.</strong></p>
         </section>
 
-        <section class="slide" data-slide="15">
+        <section class="slide" data-slide="15" data-speech="Your product roadmap must evolve. Stop building pages, screens, and menus. Start defining capabilities and outcomes. Ask: What goal does the user want achieved? What knowledge does the system need? What steps can AI automate? How should the UI adapt dynamically? This is the new product design philosophy.">
             <span class="slide-label">the new blueprint…</span>
             <ul class="slide-list">
                 <li style="margin-bottom: 1rem;">
@@ -1089,7 +1233,7 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="16">
+        <section class="slide" data-slide="16" data-speech="To make this real, we must change our architecture. We need a semantic layer mapping user intents to system capabilities. Agent-friendly APIs for actions, not endpoints. Generators for workflows, documents, UIs, and queries. Validators ensuring safety and correctness. And adaptive UI that changes dynamically. This is not about replacing your stack. This is about rethinking your foundations.">
             <span class="slide-label">the principles…</span>
             <ul class="slide-list">
                 <li><span class="highlight">1.</span> Make the user think less.</li>
@@ -1098,7 +1242,7 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="17">
+        <section class="slide" data-slide="17" data-speech="Three principles define intent-driven design: First, reduce cognitive load. Second, shift execution to the system. Third, remove friction so the user almost forgets there is an app. Invisible software is the future.">
             <span class="slide-label">the vanishing act…</span>
             <h2 class="slide-title">The best interface is <span class="highlight">no interface</span>.</h2>
             <ul class="slide-list" style="margin-top: 2rem;">
@@ -1108,18 +1252,18 @@
             </ul>
         </section>
 
-        <section class="slide" data-slide="18">
+        <section class="slide" data-slide="18" data-speech="When Meta and Apple glasses become mainstream, the idea of a button-based app will collapse. Your software must understand spoken intent, understand gestures, visualize data in three-dee, and take actions in the background. Workflow design simply cannot survive this world.">
             <span class="slide-label">resistance is natural…</span>
             <h2 class="slide-title">We can cling to workflows…</h2>
             <p class="slide-content">Or we can <span class="highlight">embrace the next evolution</span>.</p>
         </section>
 
-        <section class="slide slide--quote" data-slide="19">
+        <section class="slide slide--quote" data-slide="19" data-speech="Every revolution faces resistance. People said mobile apps are toys. Touchscreens are gimmicks. Cloud will never be secure. AI can't understand humans. And yet here we are. We can cling to workflows, or we can embrace the next evolution.">
             <span class="slide-label">the end notes…</span>
             <p class="quote-text">The future belongs to <span class="highlight">intent-driven systems</span>.</p>
         </section>
 
-        <section class="slide slide--end" data-slide="20">
+        <section class="slide slide--end" data-slide="20" data-speech="Let me close with this: The companies that survived past revolutions weren't always the biggest. They were the fastest to adapt. This revolution is no different. We're moving from a world where users work for software to a world where software works for users. The future is intent-driven. And the time to build it is now.">
             <span class="slide-label">thank you…</span>
             <p class="quote-text" style="font-size: clamp(1.8rem, 3.5vw, 2.5rem); max-width: 800px; line-height: 1.6;">
                 <span class="highlight">The best apps don't ask questions.</span>
@@ -1244,6 +1388,223 @@
                 
                 const progress = (this.currentSlide / this.totalSlides) * 100;
                 this.progressBar.style.width = `${progress}%`;
+            }
+        }
+
+        // ============================================
+        // SPEECH MANAGER CLASS
+        // ============================================
+        class SpeechManager {
+            constructor(presentation) {
+                this.presentation = presentation;
+                this.synth = window.speechSynthesis;
+                this.isPlaying = false;
+                this.isPaused = false;
+                this.currentUtterance = null;
+                this.timerInterval = null;
+                this.timeRemaining = 0;
+
+                // Get available voices and set to female if available
+                this.voices = [];
+                this.selectedVoice = null;
+                this.initializeVoices();
+
+                // UI Elements
+                this.autoplayStartBtn = document.getElementById('autoplayStartBtn');
+                this.autoplayControl = document.getElementById('autoplayControl');
+                this.autoplayControlBtn = document.getElementById('autoplayControlBtn');
+                this.autoplayStatus = document.getElementById('autoplayStatus');
+                this.autoplayTimer = document.getElementById('autoplayTimer');
+
+                this.bindEvents();
+            }
+
+            initializeVoices() {
+                const populateVoices = () => {
+                    this.voices = this.synth.getVoices();
+                    // Try to find a female voice (preferring natural-sounding ones)
+                    this.selectedVoice = this.voices.find(v => v.name.includes('Female') || v.name.includes('female')) ||
+                                        this.voices.find(v => v.name.includes('woman') || v.name.includes('Woman')) ||
+                                        this.voices.find(v => !v.name.includes('Male') && !v.name.includes('male')) ||
+                                        this.voices[0];
+                };
+
+                if (this.synth.getVoices().length > 0) {
+                    populateVoices();
+                } else {
+                    this.synth.onvoiceschanged = populateVoices;
+                }
+            }
+
+            bindEvents() {
+                this.autoplayStartBtn.addEventListener('click', () => this.startAutoplay());
+                this.autoplayControlBtn.addEventListener('click', () => this.togglePlayPause());
+            }
+
+            startAutoplay() {
+                this.autoplayStartBtn.style.display = 'none';
+                this.autoplayControl.style.display = 'block';
+                this.autoplayTimer.style.display = 'block';
+                this.isPlaying = true;
+                this.isPaused = false;
+                this.updateControlIcon();
+                this.speakSlide(1);
+            }
+
+            speakSlide(slideNum) {
+                const slide = this.presentation.slides[slideNum - 1];
+                if (!slide) return;
+
+                // Cancel any ongoing speech
+                this.synth.cancel();
+                this.clearTimer();
+
+                const speechText = slide.getAttribute('data-speech');
+                if (!speechText) {
+                    // If no speech content, skip to next slide after a delay
+                    setTimeout(() => this.goToNextSlide(), 1500);
+                    return;
+                }
+
+                this.currentUtterance = new SpeechSynthesisUtterance(speechText);
+                this.currentUtterance.voice = this.selectedVoice;
+                this.currentUtterance.rate = 0.95; // Slightly slower for clarity
+                this.currentUtterance.pitch = 1;
+                this.currentUtterance.volume = 1;
+
+                this.currentUtterance.onstart = () => {
+                    this.isPlaying = true;
+                    this.isPaused = false;
+                    this.updateControlIcon();
+                };
+
+                this.currentUtterance.onend = () => {
+                    if (!this.isPaused && this.isPlaying) {
+                        this.goToNextSlide();
+                    }
+                };
+
+                this.currentUtterance.onerror = (e) => {
+                    console.error('Speech error:', e);
+                    this.goToNextSlide();
+                };
+
+                // Calculate accurate duration based on speech rate and text length
+                const estimatedDuration = this.calculateSpeechDuration(speechText);
+                this.setupTimer(estimatedDuration);
+
+                this.synth.speak(this.currentUtterance);
+            }
+
+            calculateSpeechDuration(text) {
+                // More accurate calculation based on:
+                // - Average speaking rate: ~150 words per minute at normal speed
+                // - Current speed rate: 0.95 (slightly slower)
+                // - Character-based calculation for better accuracy
+                
+                const words = text.trim().split(/\s+/).length;
+                const chars = text.length;
+                
+                // Adjusted WPM based on speech rate (0.95)
+                // At normal rate (1.0): ~150 WPM
+                // At 0.95 rate: ~142 WPM
+                const adjustedWPM = 150 * 0.95;
+                
+                // Calculate duration in milliseconds
+                const durationMs = (words / adjustedWPM) * 60 * 1000;
+                
+                return durationMs;
+            }
+
+            setupTimer(duration) {
+                this.clearTimer();
+                this.timeRemaining = Math.ceil(duration / 1000);
+                this.updateTimerDisplay();
+
+                this.timerInterval = setInterval(() => {
+                    if (this.isPlaying && !this.isPaused) {
+                        this.timeRemaining--;
+                        this.updateTimerDisplay();
+
+                        if (this.timeRemaining <= 0) {
+                            this.clearTimer();
+                        }
+                    }
+                }, 1000);
+            }
+
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timeRemaining / 60);
+                const seconds = this.timeRemaining % 60;
+                this.autoplayTimer.textContent = `Next slide in ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            clearTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            }
+
+            goToNextSlide() {
+                if (this.isPlaying && this.presentation.currentSlide < this.presentation.totalSlides) {
+                    this.presentation.goTo(this.presentation.currentSlide + 1);
+                    this.speakSlide(this.presentation.currentSlide);
+                } else {
+                    this.stopAutoplay();
+                }
+            }
+
+            togglePlayPause() {
+                if (!this.isPlaying) {
+                    this.resume();
+                } else if (this.isPaused) {
+                    this.resume();
+                } else {
+                    this.pause();
+                }
+            }
+
+            pause() {
+                this.isPaused = true;
+                this.synth.pause();
+                this.updateControlIcon();
+                this.autoplayStatus.textContent = 'Autoplay: Paused';
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                }
+            }
+
+            resume() {
+                this.isPaused = false;
+                this.synth.resume();
+                this.updateControlIcon();
+                this.autoplayStatus.textContent = 'Autoplay: Playing';
+                // Resume timer if there's remaining time
+                if (this.timeRemaining > 0) {
+                    this.setupTimer(this.timeRemaining * 1000);
+                }
+            }
+
+            stopAutoplay() {
+                this.isPlaying = false;
+                this.isPaused = false;
+                this.synth.cancel();
+                this.clearTimer();
+                this.autoplayControl.style.display = 'none';
+                this.autoplayTimer.style.display = 'none';
+                this.autoplayStartBtn.style.display = 'block';
+            }
+
+            updateControlIcon() {
+                const svg = this.autoplayControlBtn.querySelector('svg');
+                if (this.isPaused) {
+                    // Play icon
+                    svg.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+                } else {
+                    // Pause icon
+                    svg.innerHTML = '<rect x="6" y="3" width="4" height="18"></rect><rect x="14" y="3" width="4" height="18"></rect>';
+                }
             }
         }
 
@@ -1443,7 +1804,9 @@
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
             const presentation = new Presentation();
+            const speechManager = new SpeechManager(presentation);
             window.mouseBuddy = new MouseBuddy();
+            window.speechManager = speechManager;
         });
     </script>
 
