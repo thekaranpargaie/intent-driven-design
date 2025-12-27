@@ -965,6 +965,127 @@
 .autoplay-timer:hover {
     opacity: 0.8;
 }
+
+/* Subtitle Control Button */
+.subtitle-control {
+    position: fixed;
+    bottom: 2.5rem;
+    left: 6rem;
+    z-index: 1000;
+    opacity: 0.15;
+    transition: opacity 0.3s var(--transition-smooth);
+}
+
+.subtitle-control:hover {
+    opacity: 1;
+}
+
+.subtitle-control-btn {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(0, 184, 148, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    color: var(--accent-teal);
+}
+
+.subtitle-control-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--accent-teal);
+    transform: scale(1.05);
+}
+
+.subtitle-control-btn:active {
+    transform: scale(0.98);
+}
+
+.subtitle-control-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+.subtitle-control-btn.disabled {
+    opacity: 0.5;
+    border-color: #ccc;
+    color: #999;
+}
+
+.subtitle-control-btn.disabled svg {
+    stroke: #999;
+}
+
+.subtitle-status {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s var(--transition-smooth);
+}
+
+.subtitle-control:hover .subtitle-status {
+    opacity: 1;
+}
+
+/* Subtitle Container */
+.subtitle-container {
+    position: fixed;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: 90%;
+    z-index: 999;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s var(--transition-smooth);
+}
+
+.subtitle-text {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+    line-height: 1.5;
+    color: white;
+    text-align: center;
+    margin: 0;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .subtitle-container {
+        bottom: 2rem;
+        padding: 0.4rem 0.8rem;
+        max-width: 95%;
+    }
+    
+    .subtitle-text {
+        white-space: normal;
+    }
+    
+    .subtitle-control {
+        left: 4.5rem;
+    }
+}
     </style>
 </head>
 <body>
@@ -1036,8 +1157,24 @@
         <div class="autoplay-status" id="autoplayStatus">Autoplay: Playing</div>
     </div>
     
+    <!-- Subtitle Toggle Button -->
+    <div class="subtitle-control" id="subtitleControl" style="display: none;">
+        <button class="subtitle-control-btn" id="subtitleControlBtn" aria-label="Toggle subtitles">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M7 15h4M13 15h4M7 11h2M13 11h2"></path>
+            </svg>
+        </button>
+        <div class="subtitle-status" id="subtitleStatus">Subtitles: On</div>
+    </div>
+    
     <!-- Autoplay Timer -->
     <div class="autoplay-timer" id="autoplayTimer" style="display: none;">Next slide in 00:00</div>
+    
+    <!-- Subtitle Display -->
+    <div class="subtitle-container" id="subtitleContainer" style="display: none;">
+        <p class="subtitle-text" id="subtitleText"></p>
+    </div>
 
     <div class="presentation" id="presentation">
         <section class="slide slide--title active" data-slide="1" data-speech="Every few decades, the technology world experiences a shift so profound that it rewrites the rules — not just for developers or designers — but for how humans interact with machines. Today, I'll walk you through the next such shift. A shift from workflow-driven design to intent-driven design. A shift that will define the next generation of software.">
@@ -1415,6 +1552,20 @@
                 this.autoplayControlBtn = document.getElementById('autoplayControlBtn');
                 this.autoplayStatus = document.getElementById('autoplayStatus');
                 this.autoplayTimer = document.getElementById('autoplayTimer');
+                
+                // Subtitle Elements
+                this.subtitleControl = document.getElementById('subtitleControl');
+                this.subtitleControlBtn = document.getElementById('subtitleControlBtn');
+                this.subtitleStatus = document.getElementById('subtitleStatus');
+                this.subtitleContainer = document.getElementById('subtitleContainer');
+                this.subtitleText = document.getElementById('subtitleText');
+                this.subtitlesEnabled = true;
+                
+                // Subtitle word tracking
+                this.subtitleWords = [];
+                this.currentWordIndex = 0;
+                this.subtitleInterval = null;
+                this.wordsPerChunk = 12; // Show 12 words at a time
 
                 this.bindEvents();
             }
@@ -1439,11 +1590,13 @@
             bindEvents() {
                 this.autoplayStartBtn.addEventListener('click', () => this.startAutoplay());
                 this.autoplayControlBtn.addEventListener('click', () => this.togglePlayPause());
+                this.subtitleControlBtn.addEventListener('click', () => this.toggleSubtitles());
             }
 
             startAutoplay() {
                 this.autoplayStartBtn.style.display = 'none';
                 this.autoplayControl.style.display = 'block';
+                this.subtitleControl.style.display = 'block';
                 this.autoplayTimer.style.display = 'block';
                 this.isPlaying = true;
                 this.isPaused = false;
@@ -1476,9 +1629,11 @@
                     this.isPlaying = true;
                     this.isPaused = false;
                     this.updateControlIcon();
+                    this.showSubtitle(speechText, this.currentSpeechDuration);
                 };
 
                 this.currentUtterance.onend = () => {
+                    this.hideSubtitle();
                     if (!this.isPaused && this.isPlaying) {
                         this.goToNextSlide();
                     }
@@ -1486,12 +1641,16 @@
 
                 this.currentUtterance.onerror = (e) => {
                     console.error('Speech error:', e);
+                    this.hideSubtitle();
                     this.goToNextSlide();
                 };
 
                 // Calculate accurate duration based on speech rate and text length
                 const estimatedDuration = this.calculateSpeechDuration(speechText);
                 this.setupTimer(estimatedDuration);
+                
+                // Store duration for subtitle sync
+                this.currentSpeechDuration = estimatedDuration;
 
                 this.synth.speak(this.currentUtterance);
             }
@@ -1591,7 +1750,9 @@
                 this.isPaused = false;
                 this.synth.cancel();
                 this.clearTimer();
+                this.hideSubtitle();
                 this.autoplayControl.style.display = 'none';
+                this.subtitleControl.style.display = 'none';
                 this.autoplayTimer.style.display = 'none';
                 this.autoplayStartBtn.style.display = 'block';
             }
@@ -1605,6 +1766,95 @@
                     // Pause icon
                     svg.innerHTML = '<rect x="6" y="3" width="4" height="18"></rect><rect x="14" y="3" width="4" height="18"></rect>';
                 }
+            }
+            
+            toggleSubtitles() {
+                this.subtitlesEnabled = !this.subtitlesEnabled;
+                
+                if (this.subtitlesEnabled) {
+                    this.subtitleControlBtn.classList.remove('disabled');
+                    this.subtitleStatus.textContent = 'Subtitles: On';
+                    // Show current subtitle if speech is active
+                    const currentSlide = this.presentation.slides[this.presentation.currentSlide - 1];
+                    const speechText = currentSlide?.getAttribute('data-speech');
+                    if (speechText && this.isPlaying && !this.isPaused && this.currentSpeechDuration) {
+                        this.showSubtitle(speechText, this.currentSpeechDuration);
+                    }
+                } else {
+                    this.subtitleControlBtn.classList.add('disabled');
+                    this.subtitleStatus.textContent = 'Subtitles: Off';
+                    this.hideSubtitle();
+                }
+            }
+            
+            showSubtitle(text, duration) {
+                if (!this.subtitlesEnabled) return;
+                
+                // Split text into words
+                this.subtitleWords = text.split(' ');
+                this.currentWordIndex = 0;
+                
+                // Calculate timing
+                const totalWords = this.subtitleWords.length;
+                const updateInterval = (duration / totalWords) * this.wordsPerChunk;
+                
+                // Show initial chunk
+                this.updateSubtitleChunk();
+                this.subtitleContainer.style.display = 'block';
+                
+                // Clear any existing interval
+                if (this.subtitleInterval) {
+                    clearInterval(this.subtitleInterval);
+                }
+                
+                // Update subtitle progressively
+                this.subtitleInterval = setInterval(() => {
+                    this.currentWordIndex += this.wordsPerChunk;
+                    
+                    if (this.currentWordIndex >= totalWords) {
+                        // Reached the end, show last chunk and stop
+                        this.currentWordIndex = Math.max(0, totalWords - this.wordsPerChunk);
+                        this.updateSubtitleChunk();
+                        clearInterval(this.subtitleInterval);
+                        this.subtitleInterval = null;
+                    } else {
+                        this.updateSubtitleChunk();
+                    }
+                }, updateInterval);
+            }
+            
+            updateSubtitleChunk() {
+                if (!this.subtitlesEnabled || this.subtitleWords.length === 0) return;
+                
+                // Get current chunk of words
+                const chunk = this.subtitleWords.slice(
+                    this.currentWordIndex, 
+                    this.currentWordIndex + this.wordsPerChunk
+                ).join(' ');
+                
+                // Add ellipsis if not at start/end
+                let displayText = chunk;
+                if (this.currentWordIndex > 0) {
+                    displayText = '...' + displayText;
+                }
+                if (this.currentWordIndex + this.wordsPerChunk < this.subtitleWords.length) {
+                    displayText = displayText + '...';
+                }
+                
+                this.subtitleText.textContent = displayText;
+            }
+            
+            hideSubtitle() {
+                // Clear progressive update interval
+                if (this.subtitleInterval) {
+                    clearInterval(this.subtitleInterval);
+                    this.subtitleInterval = null;
+                }
+                
+                this.subtitleContainer.style.display = 'none';
+                this.subtitleText.textContent = '';
+                this.subtitleWords = [];
+                this.currentWordIndex = 0;
             }
         }
 
